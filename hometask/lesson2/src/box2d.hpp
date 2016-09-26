@@ -3,7 +3,7 @@
 #include <iostream>
 #include "point2d.hpp"
 
-class Box2D: public Point2D
+class Box2D
 {
 public:
   // Constructors
@@ -25,6 +25,15 @@ public:
   Point2D &p2() { return m_max; }
   Point2D const &p1() const { return m_min; }
   Point2D const &p2() const { return m_max; }
+
+  // Assignment operator
+  Box2D & operator = (Box2D const &obj)
+  {
+    if (this == &obj) return *this;
+    m_min = obj.m_min;
+    m_max = obj.m_max;
+    return *this;
+  }
 
   // Logical operators
   bool operator == (Box2D const &obj) const

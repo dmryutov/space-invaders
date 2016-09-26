@@ -7,6 +7,11 @@
 
 float const kEps = 1e-5;
 
+bool EqualWithEps(float v1, float v2)
+{
+  return fabs(v1 - v2) < kEps;
+}
+
 class Point2D
 {
 public:
@@ -145,12 +150,6 @@ public:
   };
 
 private:
-
-  bool EqualWithEps(float v1, float v2) const
-  {
-    return fabs(v1 - v2) < kEps;
-  }
-
   float m_x = 0.0f, m_y = 0.0f;
 };
 

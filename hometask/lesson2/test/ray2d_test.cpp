@@ -53,5 +53,5 @@ TEST(ray2d_test, test_output)
 {
   std::stringstream ss;
   ss << Ray2D(1.2, 2.4, 45);
-  EXPECT_EQ(ss.str(), "Ray2D { Point2D {1.2, 2.4}, 45 }");
+  EXPECT_EQ(ss.str(), "Ray2D { Point2D {1.2, 2.4}, Angle: 45 }");
 }
