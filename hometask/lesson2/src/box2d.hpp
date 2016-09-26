@@ -8,53 +8,69 @@ class Box2D
 public:
   // Constructors
   Box2D() = default;
+
   Box2D(float x1, float y1, float x2, float y2)
     : m_min(x1, y1), m_max(x2, y2)
-  { PointSwap(); }
+  {
+    PointSwap();
+  }
+
   Box2D(Point2D p1, Point2D p2)
     : m_min(p1), m_max(p2)
-  { PointSwap(); }
+  {
+    PointSwap();
+  }
 
   // Copy constructor
-  Box2D(Box2D const &obj)
+  Box2D(Box2D const & obj)
     : m_min(obj.m_min), m_max(obj.m_max)
   { PointSwap(); }
 
   // Getters
-  Point2D &p1() { return m_min; }
-  Point2D &p2() { return m_max; }
-  Point2D const &p1() const { return m_min; }
-  Point2D const &p2() const { return m_max; }
+  Point2D & boxMin() { return m_min; }
+  Point2D & boxMax() { return m_max; }
+  Point2D const & boxMin() const { return m_min; }
+  Point2D const & boxMax() const { return m_max; }
 
   // Assignment operator
-  Box2D & operator = (Box2D const &obj)
+  Box2D & operator = (Box2D const & obj)
   {
-    if (this == &obj) return *this;
+    if (this == & obj) return *this;
     m_min = obj.m_min;
     m_max = obj.m_max;
     return *this;
   }
 
   // Logical operators
-  bool operator == (Box2D const &obj) const
+  bool operator == (Box2D const & obj) const
   {
     return m_min == obj.m_min && m_max == obj.m_max;
   }
-  bool operator != (Box2D const &obj) const
+  bool operator != (Box2D const & obj) const
   {
     return !operator==(obj);
   }
 
   // Functionality
-  bool IntersectBox(Box2D const &obj) const
+  bool IntersectBox(Box2D const & obj) const
   {
-    return m_min.x() < obj.p2().x()
-      && m_max.x() > obj.p1().x()
-      && m_min.y() < obj.p2().y()
-      && m_max.y() > obj.p1().y();
+    // B1 is left of B2
+    if (m_max.x() < obj.boxMin().x())
+      return false;
+    // B1 is right of B2
+    if (m_min.x() > obj.boxMax().x())
+      return false;
+    // B1 is above B2
+    if (m_max.y() < obj.boxMin().y())
+      return false;
+    // B1 is below B2
+    if (m_min.y() > obj.boxMax().y())
+      return false;
+    return true;
   }
 private:
-  void PointSwap() {
+  void PointSwap()
+  {
     if (m_max < m_min)
       std::swap(m_min, m_max);
   }
@@ -63,8 +79,8 @@ private:
   Point2D m_max {1, 1};
 };
 
-std::ostream &operator << (std::ostream &os, Box2D const &obj)
+std::ostream & operator << (std::ostream & os, Box2D const & obj)
 {
-  os << "Box2D { " << obj.p1() << ", " << obj.p2() << " }";
+  os << "Box2D { " << obj.boxMin() << ", " << obj.boxMax() << " }";
   return os;
 }
