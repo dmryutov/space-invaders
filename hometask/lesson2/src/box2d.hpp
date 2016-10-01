@@ -24,9 +24,12 @@ public:
   // Copy constructor
   Box2D(Box2D const & obj)
     : m_min(obj.m_min), m_max(obj.m_max)
-  {
-    PointSwap();
-  }
+  {}
+
+  // Move constructor
+  Box2D(Box2D && obj)
+    : m_min(std::move(obj.m_min)), m_max(std::move(obj.m_max))
+  {}
 
   // Getters
   Point2D & boxMin() { return m_min; }
@@ -40,6 +43,14 @@ public:
     if (this == &obj) return *this;
     m_min = obj.m_min;
     m_max = obj.m_max;
+    return *this;
+  }
+
+  // Move operator
+  Box2D & operator = (Box2D && obj)
+  {
+    std::swap(m_min, obj.m_min);
+    std::swap(m_max, obj.m_max);
     return *this;
   }
 

@@ -18,6 +18,10 @@ TEST(point2d_test, test_construction)
   // Тест на создание копии объекта.
   Point2D p3 = p2;
   EXPECT_EQ(p3, p2);
+
+  // Move constructor
+  Point2D p4(Point2D(1.2f, 2.4f));
+  EXPECT_EQ(p4, Point2D(1.2f, 2.4f));
 }
 
 TEST(point2d_test, test_initializer_list)
@@ -36,6 +40,13 @@ TEST(point2d_test, test_assignment)
   Point2D p1;
   p1 = { 1.2f, 2.4f };
   EXPECT_EQ(p1, Point2D(1.2f, 2.4f));
+}
+
+TEST(point2d_test, test_move)
+{
+  Point2D p1 { 1.2f, 2.4f };
+  Point2D p2 = std::move(p1);
+  EXPECT_EQ(p2, Point2D(1.2f, 2.4f));
 }
 
 TEST(point2d_test, test_equality)

@@ -25,6 +25,11 @@ public:
     : m_origin(obj.m_origin), m_direction(obj.m_direction)
   {}
 
+  // Move constructor
+  Ray2D(Ray2D && obj)
+    : m_origin(std::move(obj.m_origin)), m_direction(std::move(obj.m_direction))
+  {}
+
   // Getters
   Point2D & o() { return m_origin; }
   Point2D & d() { return m_direction; }
@@ -37,6 +42,14 @@ public:
     if (this == &obj) return *this;
     m_origin = obj.m_origin;
     m_direction = obj.m_direction;
+    return *this;
+  }
+
+  // Move operator
+  Ray2D & operator = (Ray2D && obj)
+  {
+    std::swap(m_origin, obj.m_origin);
+    std::swap(m_direction, obj.m_direction);
     return *this;
   }
 
