@@ -66,22 +66,26 @@ public:
   // Functionality
   bool IntersectBox(Box2D const & obj) const
   {
-    double tmin = std::numeric_limits<double>::min(), tmax = std::numeric_limits<double>::max();
-    float angle_deg = Atan360(m_origin, m_direction);
-    float angle_rad = angle_deg * M_PI / 180;
-    float endx = cos(angle_rad);  // dirx
-    float endy = sin(angle_rad);  // diry
-    Point2D pmax = Point2D(endx, endy);
+    // Normalise direction vector
+    float xdir = m_direction.x() - m_origin.x();  // x direction
+    float ydir = m_direction.y() - m_origin.y();  // y direction
 
-    // Debug line
-    //std:: cout<<m_direction<<"; Radians = "<<angle_rad<<"; Degrees = "<<angle_deg<<std::endl;
+    // Length of direction vector
+    float length = sqrt(xdir * xdir + ydir * ydir);
+    //std::cout << "Length = " << length << std::endl;
+    // Unit vector
+    Point2D unit_vec(xdir /= length, ydir /= length);
+    //std::cout<<"Unit = "<<unit_vec<<std::endl;
+    Point2D EndPoint = m_origin + unit_vec * std::numeric_limits<float>::max();
+    //std::cout<<"EndPoint = "<<EndPoint<<std::endl;
+    double tmin = std::numeric_limits<double>::min(), tmax = std::numeric_limits<double>::max();
 
     for (int i = 0; i < 2; ++i)
     {
-      if (pmax[i] != 0.0)
+      if (EndPoint[i] != 0.0)
       {
-        double t1 = (obj.boxMin()[i] - m_origin[i])/pmax[i];
-        double t2 = (obj.boxMax()[i] - m_origin[i])/pmax[i];
+        double t1 = (obj.boxMin()[i] - m_origin[i])/EndPoint[i];
+        double t2 = (obj.boxMax()[i] - m_origin[i])/EndPoint[i];
 
         tmin = std::max(tmin, std::min(t1, t2));
         tmax = std::min(tmax, std::max(t1, t2));
@@ -93,22 +97,8 @@ public:
     return tmax > tmin && tmax > 0.0;
   }
 private:
-  // Extend Atan to 0-360 degrees
-  float Atan360(const Point2D startPoint, const Point2D endPoint) const
-  {
-    // Get origin point to origin by subtracting end from start
-    Point2D originPoint(endPoint.x() - startPoint.x(), endPoint.y() - startPoint.y());
-    // Get bearing in radians
-    float bearingRadians = atan2f(originPoint.y(), originPoint.x());
-    // Convert to degrees
-    float bearingDegrees = bearingRadians * 180.0 / M_PI;
-    // Correct discontinuity
-    bearingDegrees = bearingDegrees > 0.0 ? bearingDegrees : (360.0 + bearingDegrees);
-    return bearingDegrees;
-  }
-
   Point2D m_origin {0, 0};
-  Point2D m_direction = {0, 0};
+  Point2D m_direction {0, 0};
 };
 
 std::ostream & operator << (std::ostream & os, Ray2D const & obj)
