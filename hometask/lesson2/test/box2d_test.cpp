@@ -20,6 +20,10 @@ TEST(box2d_test, test_construction)
   // Copy constructor
   Box2D b4 = b3;
   EXPECT_EQ(b4, b3);
+
+  // Move constructor
+  Box2D b5(Box2D(1.2, 2.4, 3.1, 5.8));
+  EXPECT_EQ(b5, Box2D(1.2, 2.4, 3.1, 5.8));
 }
 
 TEST(box2d_test, test_assignment)
@@ -27,6 +31,13 @@ TEST(box2d_test, test_assignment)
   Box2D b1;
   b1 = {1.2, 2.4, 3.1, 5.8};
   EXPECT_EQ(b1, Box2D(1.2, 2.4, 3.1, 5.8));
+}
+
+TEST(box2d_test, test_move)
+{
+  Box2D b1 {1.2, 2.4, 3.1, 5.8};
+  Box2D b2 = std::move(b1);
+  EXPECT_EQ(b2, Box2D(1.2, 2.4, 3.1, 5.8));
 }
 
 TEST(box2d_test, test_equality)

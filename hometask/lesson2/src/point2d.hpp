@@ -18,6 +18,11 @@ public:
     : m_x(obj.m_x), m_y(obj.m_y)
   {}
 
+  // Move constructor
+  Point2D(Point2D && obj)
+    : m_x(std::move(obj.m_x)), m_y(std::move(obj.m_y))
+  {}
+
   // Конструктор с параметрами.
   Point2D(float x, float y)
     : m_x(x), m_y(y)
@@ -51,6 +56,14 @@ public:
     if (this == &obj) return *this;
     m_x = obj.m_x;
     m_y = obj.m_y;
+    return *this;
+  }
+
+  // Move operator
+  Point2D & operator = (Point2D && obj)
+  {
+    std::swap(m_x, obj.m_x);
+    std::swap(m_y, obj.m_y);
     return *this;
   }
 

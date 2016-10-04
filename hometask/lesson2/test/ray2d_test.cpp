@@ -21,6 +21,10 @@ TEST(ray2d_test, test_construction)
   // Copy constructor
   Ray2D r4 = r3;
   EXPECT_EQ(r4, r3);
+
+  // Move constructor
+  Ray2D r5(Ray2D(1.2, 2.4, 3.1, 5.8));
+  EXPECT_EQ(r5, Ray2D(1.2, 2.4, 3.1, 5.8));
 }
 
 TEST(ray2d_test, test_assignment)
@@ -28,6 +32,13 @@ TEST(ray2d_test, test_assignment)
   Ray2D r1;
   r1 = {1.2, 2.4, 3.1, 5.8};
   EXPECT_EQ(r1, Ray2D(1.2, 2.4, 3.1, 5.8));
+}
+
+TEST(ray2d_test, test_move)
+{
+  Ray2D r1 {1.2, 2.4, 3.1, 5.8};
+  Ray2D r2 = std::move(r1);
+  EXPECT_EQ(r2, Ray2D(1.2, 2.4, 3.1, 5.8));
 }
 
 TEST(ray2d_test, test_equality)

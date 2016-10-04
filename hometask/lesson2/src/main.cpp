@@ -23,7 +23,6 @@ int main()
   std::cout << b41.IntersectBox(b42) << std::endl;
   std::cout << std::endl;
 
-  //Ray2D r1(6, 1, 7, 6);
   Ray2D r1(6, 1, 8, 4);
   Box2D b1(6, 2, 7, 5);
   Box2D b2(1, 1, 4, 2);
@@ -33,6 +32,11 @@ int main()
   std::cout << r1.IntersectBox(b1) << std::endl;
   std::cout << b2 << std::endl;
   std::cout << r1.IntersectBox(b2) << std::endl << std::endl;
+
+  Box2D b3(Box2D(6, 2, 7, 5));
+  Box2D b4 = std::move(b3);
+  Ray2D r2(Ray2D(6, 1, 8, 4));
+  Ray2D r3 = std::move(r2);
 
   return 0;
 }
