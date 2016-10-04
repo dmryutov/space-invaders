@@ -66,35 +66,40 @@ public:
   // Functionality
   bool IntersectBox(Box2D const & obj) const
   {
-    // Normalise direction vector
-    float xdir = m_direction.x() - m_origin.x();  // x direction
-    float ydir = m_direction.y() - m_origin.y();  // y direction
-
-    // Length of direction vector
-    float length = sqrt(xdir * xdir + ydir * ydir);
-    //std::cout << "Length = " << length << std::endl;
-    // Unit vector
-    Point2D unit_vec(xdir /= length, ydir /= length);
-    //std::cout<<"Unit = "<<unit_vec<<std::endl;
-    Point2D EndPoint = m_origin + unit_vec * std::numeric_limits<float>::max();
-    //std::cout<<"EndPoint = "<<EndPoint<<std::endl;
-    double tmin = std::numeric_limits<double>::min(), tmax = std::numeric_limits<double>::max();
+    Point2D unitVec = NormalizeVector(m_direction, m_origin);
+    //std::cout << "Unit = " << unitVec << std::endl;
+    Point2D endPoint = m_origin + unitVec * std::numeric_limits<float>::max();
+    //std::cout << "EndPoint = " << endPoint << std::endl;
+    double tMin = std::numeric_limits<double>::min(), tMax = std::numeric_limits<double>::max();
 
     for (int i = 0; i < 2; ++i)
     {
-      if (EndPoint[i] != 0.0)
+      if (endPoint[i] != 0.0)
       {
-        double t1 = (obj.boxMin()[i] - m_origin[i])/EndPoint[i];
-        double t2 = (obj.boxMax()[i] - m_origin[i])/EndPoint[i];
+        double t1 = (obj.boxMin()[i] - m_origin[i])/endPoint[i];
+        double t2 = (obj.boxMax()[i] - m_origin[i])/endPoint[i];
 
-        tmin = std::max(tmin, std::min(t1, t2));
-        tmax = std::min(tmax, std::max(t1, t2));
+        tMin = std::max(tMin, std::min(t1, t2));
+        tMax = std::min(tMax, std::max(t1, t2));
       }
       else if (m_origin[i] <= obj.boxMin()[i] || m_origin[i] >= obj.boxMax()[i])
         return false;
     }
 
-    return tmax > tmin && tmax > 0.0;
+    return tMax > tMin && tMax > 0.0;
+  }
+
+  Point2D NormalizeVector(Point2D const m_dir, Point2D const m_orig) const
+  {
+    // Normalise direction vector
+    float xDir = m_dir.x() - m_orig.x();  // x direction
+    float yDir = m_dir.y() - m_orig.y();  // y direction
+
+    // Length of direction vector
+    float length = sqrt(xDir * xDir + yDir * yDir);
+    //std::cout << "Length = " << length << std::endl;
+
+    return Point2D(xDir / length, yDir / length);
   }
 private:
   Point2D m_origin {0, 0};
