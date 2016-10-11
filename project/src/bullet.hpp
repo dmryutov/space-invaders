@@ -11,7 +11,8 @@ public:
     // Set dimensions and position
   }
 
-  void Move() {
+  void Move()
+  {
     // Get bullet direction and move with GameEntity::Move()
   }
 

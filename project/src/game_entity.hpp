@@ -2,7 +2,8 @@
 
 #include "box2d.hpp"
 
-class GameEntity {
+class GameEntity
+{
 public:
   // Constructor
   GameEntity() = default;
@@ -13,7 +14,8 @@ public:
   // Move direction
   enum MoveDir {MOVE_LEFT, MOVE_DOWN, MOVE_RIGHT, MOVE_UP};
 
-  void Move(MoveDir dir) {
+  void Move(MoveDir dir)
+  {
     // Move game object
   }
 protected:

@@ -13,7 +13,8 @@ public:
     // Set speed, dimensions and position
   }
 
-  void Shoot(std::list<Bullet> &) {
+  void Shoot(std::list<Bullet> &)
+  {
     // Shoot (add bullet to std::list<Bullet>)
   }
 

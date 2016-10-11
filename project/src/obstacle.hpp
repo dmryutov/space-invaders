@@ -6,7 +6,8 @@ class Obstacle: public GameEntity
 {
 public:
   // Constructor
-  Obstacle(int, int) {
+  Obstacle(int, int)
+  {
     // Set dimensions and position
   }
 
