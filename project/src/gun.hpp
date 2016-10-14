@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include "settings.hpp"
 #include "game_entity.hpp"
 #include "bullet.hpp"
 
@@ -10,20 +11,25 @@ public:
   // Constructor
   Gun() = default;
 
+  // Functionality
   void Reset()
   {
-    // Reset gun's health and speed when start new game
+    // Reset parameters when start new game
+    m_health = 3;
+    m_speed = 10;
   }
 
-  void Create(int const)
+  void Create()
   {
-    // Set dimensions and position
+    // Dimensions
+    m_width = Settings::gunWidth;
+    m_height = Settings::gunHeight;
+    // Coords
+    m_position = {(Settings::windowWidth - m_width) / 2, Settings::windowHeight - m_height};
   }
 
-  void Shoot(std::list<Bullet> &)
+  void Shoot(std::list<Bullet> & bullet)
   {
-    // Shoot (add bullet to std::list<Bullet>)
+    bullet.push_back(Bullet(m_position.x() + m_width/2, m_position.y(), true));
   }
-
-  int m_health = 3;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include "settings.hpp"
 #include "game_entity.hpp"
 #include "bullet.hpp"
 
@@ -8,16 +9,22 @@ class Alien: public GameEntity
 {
 public:
   // Constructor
-  Alien(int, int, int)
+  Alien(float x, float y, int speed, int health)
   {
-    // Set speed, dimensions and position
+    m_speed = speed;
+    m_health = health;
+    // Dimensions
+    m_width = Settings::alienWidth;
+    m_height = Settings::alienHeight;
+    // Coords
+    m_position = {x, y};
   }
 
-  void Shoot(std::list<Bullet> &)
+  // Functionality
+  void Shoot(std::list<Bullet> & bullet)
   {
-    // Shoot (add bullet to std::list<Bullet>)
+    bullet.push_back(Bullet(m_position.x() + m_width/2, m_position.y() + m_height, false));
   }
 
-  int m_health = 1;
   int m_score = 10;
 };

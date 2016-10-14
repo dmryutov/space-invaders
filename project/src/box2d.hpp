@@ -21,6 +21,12 @@ public:
     PointSwap();
   }
 
+  Box2D(Point2D p1, float w, float h)
+    : m_min(p1), m_max(p1.x() + w, p1.y() + h)
+  {
+    PointSwap();
+  }
+
   // Copy constructor
   Box2D(Box2D const & obj)
     : m_min(obj.m_min), m_max(obj.m_max)
