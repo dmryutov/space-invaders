@@ -3,7 +3,9 @@
 #include <list>
 #include <random>
 #include "settings.hpp"
+#include "ray2d.hpp"
 #include "renderer.hpp"
+#include "gun.hpp"
 #include "alien.hpp"
 
 class AlienGroup: public GameEntity
@@ -16,16 +18,16 @@ public:
   void Reset()
   {
     // Reset parameters when start new game
-    m_speed = 4.5;
-    m_shootPossibility = 1.3;
+    m_speed = Settings::alienSpeed;
+    m_shootPossibility = Settings::alienShootPossibility;
   }
 
   void Create(int const level)
   {
     // Increase difficulty level by level
-    m_speed += 0.5;
-    m_shootPossibility += 0.2;
-    int health = 1 + level / 15;
+    m_speed += Settings::alienSpeedInc;
+    m_shootPossibility += Settings::alienShootPossibilityInc;
+    int health = 1 + level / Settings::alienHealthInc;
 
     int rowCount = 3;
     int colCount = 10;
@@ -41,13 +43,13 @@ public:
     m_position = {(Settings::windowWidth - alienWidth) / 2 + gap * Settings::alienWidth / 2, h};
     
     // Create aliens
-    m_alien.clear();
+    m_aliens.clear();
     for (int i = 0; i < rowCount; ++i)
     {
       w = m_position.x();
       for (int j = 0; j < colCount; ++j)
       {
-        m_alien.push_back(Alien(w, h, m_speed, health));
+        m_aliens.push_back(Alien(w, h, m_speed, health));
         w += gap * Settings::alienWidth;
       }
       h += gap * Settings::alienHeight;
@@ -56,7 +58,7 @@ public:
 
   void Draw(Renderer & renderer)
   {
-    for (auto alien : m_alien)
+    for (auto const & alien : m_aliens)
       renderer.Draw(alien);
   }
 
@@ -79,24 +81,29 @@ public:
       direction = Alien::MOVE_UP;
 
     GameEntity::Move(direction);
-    for (auto &alien : m_alien)
+    for (auto & alien : m_aliens)
       alien.GameEntity::Move(direction);
   }
 
-  void Shoot(std::list<Bullet> & bullet)
+  void Shoot(Gun const & gun, std::list<Bullet> & bullets)
   {
     // Shoot logic
     std::random_device rd;
     std::default_random_engine e(rd());
     std::uniform_real_distribution<double> dist(1, 100);
 
-    for (auto & alien : m_alien)
+    Box2D gun_box {gun.m_position, gun.m_width, gun.m_height};
+
+    for (auto & alien : m_aliens)
     {
-      if (dist(e) < m_shootPossibility)
-        alien.Shoot(bullet);
+      float x = alien.m_position.x() + alien.m_width / 2;
+      float y = alien.m_position.y();
+
+      if (Ray2D(x, y, x, Settings::windowHeight).IntersectSector(gun_box, 40) && dist(e) < m_shootPossibility)
+        alien.Shoot(bullets);
     }
   }
 
-  std::list<Alien> m_alien;
+  std::list<Alien> m_aliens;
   float m_shootPossibility = 1;
 };

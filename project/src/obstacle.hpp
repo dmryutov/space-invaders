@@ -9,6 +9,9 @@ public:
   // Constructor
   Obstacle(int current, int total)
   {
+    if (total < 1)
+      throw std::invalid_argument("Amount of obstacles should be greater than 0!");
+
     m_health = 10;
     // Dimensions
     m_width = Settings::obstacleWidth;

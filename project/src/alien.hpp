@@ -21,9 +21,9 @@ public:
   }
 
   // Functionality
-  void Shoot(std::list<Bullet> & bullet)
+  void Shoot(std::list<Bullet> & bullets)
   {
-    bullet.push_back(Bullet(m_position.x() + m_width/2, m_position.y() + m_height, false));
+    bullets.emplace_back(Bullet(m_position.x() + m_width/2, m_position.y() + m_height, false));
   }
 
   int m_score = 10;

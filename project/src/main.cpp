@@ -17,7 +17,8 @@ void Draw()
 // Callback function
 void Timer(int = 0)
 {
-  game.Tick();
+  if (game.m_exitGame)
+  	game.Tick();
 }
 
 int main (int argc, char **argv)

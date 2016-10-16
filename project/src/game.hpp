@@ -2,6 +2,7 @@
 
 #include "settings.hpp"
 #include "renderer.hpp"
+#include "action_manager.hpp"
 #include "gun.hpp"
 #include "alien_group.hpp"
 #include "bullet.hpp"
@@ -22,33 +23,33 @@ public:
   void KeyInput(int key)
   {
     // Control game logic depending on pressed keys from keyboard
-    switch (key)
+    switch (m_actionManager.GetCode(key))
     {
-      case 'w': case 'W':
+      case ActionManager::KEY_UP:
         if (m_menuItem != 0)
           m_menuItem--;
         break;
-      case 's': case 'S':
+      case ActionManager::KEY_DOWN:
         if (m_menuItem != 1)
           m_menuItem++;
         break;
-      case 'a': case 'A':
+      case ActionManager::KEY_LEFT:
         m_gun.Move(GameEntity::MOVE_LEFT);
         break;
-      case 'd': case 'D':
+      case ActionManager::KEY_RIGHT:
         m_gun.Move(GameEntity::MOVE_RIGHT);
         break;
-      case 32:  // Space
-        m_gun.Shoot(m_bullet);
+      case ActionManager::KEY_SHOOT:
+        m_gun.Shoot(m_bullets);
         break;
-      case 13:  // Enter
+      case ActionManager::KEY_ENTER:
         // Start menu
         if (m_state == MENU)
         {
           if (m_menuItem == 0)
             m_state = LOAD_LEVEL;
           else if (m_menuItem == 1)
-            exit(0);
+            m_exitGame = true;
         }
         // Game over menu
         else if (m_state == FAIL)
@@ -56,12 +57,12 @@ public:
           if (m_menuItem == 0)
             m_state = MENU;
           else if (m_menuItem == 1)
-            exit(0);
+            m_exitGame = true;
           break;
         }
         break;
-      case 27: case 113:  // Esc, q
-        exit(0);
+      case ActionManager::KEY_QUIT:
+        m_exitGame = true;
         break;
     }
   }
@@ -89,21 +90,31 @@ public:
     }
   }
 
+  bool m_exitGame = false;
+
 private:
   void LoadLevel()
   {
     m_level++;
     m_state = GAME;
     // Delete bullets
-    m_bullet.clear();
+    m_bullets.clear();
     // Load gun
     m_gun.Create();
     // Load aliens
     m_alien.Create(m_level);
+
     // Load obstacles
     int obstacleCount = 3;
-    for (int i = 0; i < obstacleCount; ++i)
-      m_obstacle.push_back(Obstacle(i, obstacleCount));
+    try
+    {
+      for (int i = 0; i < obstacleCount; ++i)
+        m_obstacles.push_back(Obstacle(i, obstacleCount));
+    }
+    catch (std::exception const & ex)
+    {
+      std::cerr << "[ERROR]\t" << ex.what();
+    }
 
     // Draw load screen
     m_renderer.DrawLevelLoad(m_level);
@@ -113,9 +124,9 @@ private:
   {
     // Draw objects
     m_renderer.DrawPanel(m_score, m_level, m_gun.m_health);
-    for (auto bullet : m_bullet)
+    for (auto const & bullet : m_bullets)
       m_renderer.Draw(bullet);
-    for (auto obstacle : m_obstacle)
+    for (auto const & obstacle : m_obstacles)
       m_renderer.Draw(obstacle);
     m_renderer.Draw(m_gun);
     m_alien.Draw(m_renderer);
@@ -126,134 +137,78 @@ private:
     // Move aliens
     m_alien.Move();
     // Shoot
-    m_alien.Shoot(m_bullet);
+    m_alien.Shoot(m_gun, m_bullets);
 
-
-    /*// Move gun bullets
-    for (auto bullet = m_bullet.begin(); bullet != m_bullet.end(); )
+    try
     {
-      Box2D bulletBox(bullet->m_position, bullet->m_width, bullet->m_height);
-      // Out of screen
-      if (bullet->m_position.y() < 70 || bullet->m_position.y() + bullet->m_height > Settings::windowHeight - 20)
-        m_bullet.erase(bullet++);
-      // Kill gun
-      else if (!bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(m_gun.m_position, m_gun.m_width, m_gun.m_height)))
-      {
-        m_gun.m_health--;
-        m_bullet.erase(bullet++);
-      }
-      // Move bullets
-      else
-      {
-        bullet->Move();
-        ++bullet;
-      }
-    }
-
-    for (auto obstacle = m_obstacle.begin(); obstacle != m_obstacle.end(); )
-    {
-      for (auto bullet = m_bullet.begin(); bullet != m_bullet.end(); )
+      // Move gun bullets
+      for (auto bullet = m_bullets.begin(); bullet != m_bullets.end(); )
       {
         Box2D bulletBox(bullet->m_position, bullet->m_width, bullet->m_height);
+        bool skip = false;
+
         // Kill obstacle
-        if (bulletBox.IntersectBox(Box2D(obstacle->m_position, obstacle->m_width, obstacle->m_height)))
+        for (auto obstacle = m_obstacles.begin(); obstacle != m_obstacles.end(); )
         {
-          obstacle->m_health--;
-          m_bullet.erase(bullet++);
-          if (obstacle->m_health == 0)
-            m_obstacle.erase(obstacle++);
+          if (bulletBox.IntersectBox(Box2D(obstacle->m_position, obstacle->m_width, obstacle->m_height)))
+          {
+            obstacle->m_health--;
+            m_bullets.erase(bullet++);
+            if (obstacle->m_health == 0)
+              m_obstacles.erase(obstacle++);
+            skip = true;
+            break;
+          }
+          else
+            ++obstacle;
         }
-        else
-          ++bullet;
-      }
-      ++obstacle;
-    }
+        if (skip) continue;
 
-    for (auto alien = m_alien.m_alien.begin(); alien != m_alien.m_alien.end(); )
-    {
-      for (auto bullet = m_bullet.begin(); bullet != m_bullet.end(); )
-      {
-        Box2D bulletBox(bullet->m_position, bullet->m_width, bullet->m_height);
         // Kill aliens
-        if (bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(alien->m_position, alien->m_width, alien->m_height)))
+        for (auto alien = m_alien.m_aliens.begin(); alien != m_alien.m_aliens.end(); )
         {
-          alien->m_health--;
-          m_bullet.erase(bullet++);
-          if (alien->m_health == 0)
+          if (bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(alien->m_position, alien->m_width, alien->m_height)))
           {
-            m_score += alien->m_score;          
-            m_alien.m_alien.erase(alien++);
+            alien->m_health--;
+            m_bullets.erase(bullet++);
+            if (alien->m_health == 0)
+            {
+              m_score += alien->m_score;
+              m_alien.m_aliens.erase(alien++);
+            }
+            skip = true;
+            break;
           }
+          else
+            ++alien;
         }
+        if (skip) continue;
+
+        // Out of screen
+        if (bullet->m_position.y() < 70 || bullet->m_position.y() + bullet->m_height > Settings::windowHeight - 20)
+          m_bullets.erase(bullet++);
+        // Kill gun
+        else if (!bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(m_gun.m_position, m_gun.m_width, m_gun.m_height)))
+        {
+          m_gun.m_health--;
+          m_bullets.erase(bullet++);
+        }
+        // Move bullets
         else
+        {
+          bullet->Move();
           ++bullet;
+        }
       }
-      ++alien;
-    }*/
-
-    // Move gun bullets
-    for (auto bullet = m_bullet.begin(); bullet != m_bullet.end(); )
+    }
+    catch (...)
     {
-      Box2D bulletBox(bullet->m_position, bullet->m_width, bullet->m_height);
-      bool skip = false;
-
-      // Kill obstacle
-      for (auto obstacle = m_obstacle.begin(); obstacle != m_obstacle.end(); )
-      {
-        if (bulletBox.IntersectBox(Box2D(obstacle->m_position, obstacle->m_width, obstacle->m_height)))
-        {
-          obstacle->m_health--;
-          m_bullet.erase(bullet++);
-          if (obstacle->m_health == 0)
-            m_obstacle.erase(obstacle++);
-          skip = true;
-          break;
-        }
-        else
-          ++obstacle;
-      }
-      if (skip) continue;
-
-      // Kill aliens
-      for (auto alien = m_alien.m_alien.begin(); alien != m_alien.m_alien.end(); )
-      {
-        if (bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(alien->m_position, alien->m_width, alien->m_height)))
-        {
-          alien->m_health--;
-          m_bullet.erase(bullet++);
-          if (alien->m_health == 0)
-          {
-            m_score += alien->m_score;
-            m_alien.m_alien.erase(alien++);
-          }
-          skip = true;
-          break;
-        }
-        else
-          ++alien;
-      }
-      if (skip) continue;
-
-      // Out of screen
-      if (bullet->m_position.y() < 70 || bullet->m_position.y() + bullet->m_height > Settings::windowHeight - 20)
-        m_bullet.erase(bullet++);
-      // Kill gun
-      else if (!bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(m_gun.m_position, m_gun.m_width, m_gun.m_height)))
-      {
-        m_gun.m_health--;
-        m_bullet.erase(bullet++);
-      }
-      // Move bullets
-      else
-      {
-        bullet->Move();
-        ++bullet;
-      }
+      std::cerr << "[ERROR]\t" << "Segmentation fault while processing game objects!" << std::endl;
     }
 
 
     // Change game state
-    if (m_alien.m_alien.size() == 0)
+    if (m_alien.m_aliens.size() == 0)
       m_state = LOAD_LEVEL;
     else if (m_gun.m_health <= 0)
       m_state = FAIL;
@@ -268,6 +223,8 @@ private:
   Renderer m_renderer;
   Gun m_gun;
   AlienGroup m_alien;
-  std::list<Obstacle> m_obstacle;
-  std::list<Bullet> m_bullet;
+  std::list<Obstacle> m_obstacles;
+  std::list<Bullet> m_bullets;
+
+  ActionManager m_actionManager;
 };
