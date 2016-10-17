@@ -106,7 +106,7 @@ private:
     try
     {
       if (m_min.x() == m_max.x() || m_min.y() == m_max.y())
-        throw std::invalid_argument("Min and Max angles shoud be different!");
+        throw std::invalid_argument("Min and Max angles should be different!");
     }
     catch (std::exception const & ex)
     {

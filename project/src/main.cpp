@@ -18,7 +18,7 @@ void Draw()
 void Timer(int = 0)
 {
   if (game.m_exitGame)
-  	game.Tick();
+    game.Tick();
 }
 
 int main (int argc, char **argv)

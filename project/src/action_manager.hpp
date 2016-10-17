@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "settings.hpp"
 
 class ActionManager
@@ -7,9 +8,6 @@ class ActionManager
 public:
   ActionManager()
   {
-    for (int i = 0; i < 256; i++)
-      m_keys[i] = -1;
-
     m_keys[101] = KEY_UP;  // Up arrow / e
     m_keys[100] = KEY_LEFT;  // Left arrow / d
     m_keys[103] = KEY_DOWN;  // Down arrow / g
@@ -22,12 +20,12 @@ public:
     m_keys['q'] = KEY_QUIT;
   }
 
-  char GetCode(char key)
+  char GetActionByKey(char key)
   {
     return m_keys[key];
   }
 
   enum Keys {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_SHOOT, KEY_QUIT, KEY_ENTER};
 private:
-  char m_keys[256];
+  std::unordered_map<char, char> m_keys;
 };

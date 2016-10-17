@@ -15,12 +15,5 @@ TEST(obstacle_test, test_construction)
 
 TEST(obstacle_test, test_construction_exception)
 {
-  try
-  {
-    Obstacle o1 {1, 0};
-  }
-  catch (std::exception const & ex)
-  {
-    EXPECT_EQ(ex.what(), "Amount of obstacles should be greater than 0!");
-  }
+  EXPECT_THROW(Obstacle(1, 0), std::exception);
 }
