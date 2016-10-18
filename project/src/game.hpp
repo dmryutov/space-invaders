@@ -153,14 +153,16 @@ private:
           if (bulletBox.IntersectBox(Box2D(obstacle->m_position, obstacle->m_width, obstacle->m_height)))
           {
             obstacle->m_health--;
-            bullet = m_bullets.erase(bullet++);
+            bullet = m_bullets.erase(bullet);
             if (obstacle->m_health == 0)
-              m_obstacles.erase(obstacle++);
+              obstacle = m_obstacles.erase(obstacle);
             skip = true;
             break;
           }
           else
+          {
             ++obstacle;
+          }
         }
         if (skip) continue;
 
@@ -170,28 +172,30 @@ private:
           if (bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(alien->m_position, alien->m_width, alien->m_height)))
           {
             alien->m_health--;
-            bullet = m_bullets.erase(bullet++);
+            bullet = m_bullets.erase(bullet);
             if (alien->m_health == 0)
             {
               m_score += alien->m_score;
-              m_alien.m_aliens.erase(alien++);
+             alien = m_alien.m_aliens.erase(alien);
             }
             skip = true;
             break;
           }
           else
+          {
             ++alien;
+          }
         }
         if (skip) continue;
 
         // Out of screen
         if (bullet->m_position.y() < 70 || bullet->m_position.y() + bullet->m_height > Settings::windowHeight - 20)
-          bullet = m_bullets.erase(bullet++);
+          bullet = m_bullets.erase(bullet);
         // Kill gun
         else if (!bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(m_gun.m_position, m_gun.m_width, m_gun.m_height)))
         {
           m_gun.m_health--;
-          bullet = m_bullets.erase(bullet++);
+          bullet = m_bullets.erase(bullet);
         }
         // Move bullets
         else

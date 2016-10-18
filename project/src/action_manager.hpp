@@ -22,7 +22,8 @@ public:
 
   char GetActionByKey(char key)
   {
-    return m_keys[key];
+    auto it = m_keys.find(key);
+    return it != m_keys.end() ? it->second : -1;
   }
 
   enum Keys {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_SHOOT, KEY_QUIT, KEY_ENTER};
