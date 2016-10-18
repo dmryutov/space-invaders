@@ -7,7 +7,7 @@ TEST(alien_group_test, test_construction)
   AlienGroup ag1;
   EXPECT_EQ(ag1.m_height, 1);
   EXPECT_EQ(ag1.m_height, 1);
-  EXPECT_EQ(ag1.m_alien.size(), 0);
+  EXPECT_EQ(ag1.m_aliens.size(), 0);
   EXPECT_EQ(ag1.m_shootPossibility, 1);
   EXPECT_EQ(ag1.m_position, Point2D(0, 0));
 }
@@ -23,7 +23,7 @@ TEST(alien_group_test, test_create)
   EXPECT_EQ(ag1.m_shootPossibility, 1.2);
   EXPECT_EQ(ag1.m_width, alienWidth - 20);
   EXPECT_EQ(ag1.m_height, alienHeight - 20);
-  EXPECT_EQ(ag1.m_alien.size(), 30);
+  EXPECT_EQ(ag1.m_aliens.size(), 30);
   EXPECT_EQ(ag1.m_position, Point2D(350 - alienWidth / 2, 70));  // (640 - alienWidth) / 2 + 30
 }
 

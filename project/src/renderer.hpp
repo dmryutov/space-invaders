@@ -3,7 +3,8 @@
 #include "settings.hpp"
 #include "game_entity.hpp"
 
-class Renderer {
+class Renderer
+{
 public:
   // Constructor
   Renderer() = default;

@@ -17,4 +17,13 @@ float const bulletHeight = 4;
 float const obstacleWidth = 80;
 float const obstacleHeight = 40;
 
+int const gunHealth = 3;
+float const gunSpeed = 10;
+
+int const alienHealthInc = 15;
+float const alienSpeed = 4.5;
+float const alienSpeedInc = 0.5;
+float const alienShootPossibility = 4.5;  // 1.3
+float const alienShootPossibilityInc = 0.2;
+
 }

@@ -88,11 +88,13 @@ public:
     return true;
   }
 
-  float xMiddle() {
+  float xMiddle()
+  {
     return m_min.x() + (m_max.x() - m_min.x()) / 2;
   }
 
-  float yMiddle() {
+  float yMiddle()
+  {
     return m_min.y() + (m_max.y() - m_min.y()) / 2;
   }
 private:
@@ -100,6 +102,18 @@ private:
   {
     if (m_max < m_min)
       std::swap(m_min, m_max);
+
+    try
+    {
+      if (m_min.x() == m_max.x() || m_min.y() == m_max.y())
+        throw std::invalid_argument("Min and Max angles should be different!");
+    }
+    catch (std::exception const & ex)
+    {
+      std::cerr << "[ERROR]\t" << ex.what();
+      m_min = {0, 0};
+      m_max = {1, 1};
+    }
   }
 
   Point2D m_min {0, 0};
