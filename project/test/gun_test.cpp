@@ -41,3 +41,12 @@ TEST(gun_test, test_shoot)
   EXPECT_EQ(b1.back().m_fromPlayer, true);
   EXPECT_EQ(b1.back().m_position, Point2D(318, 436));
 }
+
+TEST(gun_test, test_output)
+{
+  Gun g1;
+  g1.Create();
+  std::stringstream ss;
+  ss << g1;
+  EXPECT_EQ(ss.str(), "Gun: {Position: Point2D {300, 440}, Health: 1, Speed: 10}");
+}

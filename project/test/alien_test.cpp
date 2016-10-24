@@ -21,3 +21,10 @@ TEST(alien_test, test_shoot)
   EXPECT_EQ(b1.back().m_fromPlayer, false);
   EXPECT_EQ(b1.back().m_position, Point2D(68, 80));
 }
+
+TEST(alien_test, test_output)
+{
+  std::stringstream ss;
+  ss << Alien(50, 40, 10, 1);
+  EXPECT_EQ(ss.str(), "Alien: {Position: Point2D {50, 40}, Speed: 10, Health: 1}");
+}

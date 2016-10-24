@@ -143,7 +143,7 @@ private:
   Point2D m_direction {1, 1};
 };
 
-std::ostream & operator << (std::ostream & os, Ray2D const & obj)
+inline std::ostream & operator << (std::ostream & os, Ray2D const & obj)
 {
   os << "Ray2D { Origin: " << obj.o() << ", Direction: " << obj.d() << " }";
   return os;

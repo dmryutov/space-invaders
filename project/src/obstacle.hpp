@@ -6,6 +6,9 @@
 class Obstacle: public GameEntity
 {
 public:
+  // Operator <<
+  friend std::ostream & operator << (std::ostream & os, Obstacle const & obj);
+
   // Constructor
   Obstacle(int current, int total)
   {
@@ -21,3 +24,12 @@ public:
     m_position = {(current + 1) * gap + current * m_width, Settings::windowHeight - 100};
   }
 };
+
+inline std::ostream & operator << (std::ostream & os, Obstacle const & obj)
+{
+  os << "Obstacle" << ": {"
+     << "Position: " << obj.m_position
+     << ", Health: " << obj.m_health
+     << "}";
+  return os;
+}

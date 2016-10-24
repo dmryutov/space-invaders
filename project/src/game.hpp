@@ -11,6 +11,9 @@
 class Game
 {
 public:
+  // Operator <<
+  friend std::ostream & operator << (std::ostream & os, Game const & obj);
+
   // Constructor
   Game() = default;
 
@@ -88,6 +91,8 @@ public:
         m_renderer.DrawEndMenu(m_score, m_menuItem);
         break;
     }
+
+    LOG(LOG_DEBUG) << *this;
   }
 
   bool m_exitGame = false;
@@ -232,3 +237,17 @@ private:
 
   ActionManager m_actionManager;
 };
+
+inline std::ostream & operator << (std::ostream & os, Game const & obj)
+{
+  os << "Game" << ": {"
+     << "Score: " << obj.m_score
+     << ", Level: " << obj.m_level
+     << ", State: " << obj.m_state
+     << ", Gun: " << obj.m_gun
+     << ", AlienGroup: " << obj.m_alien
+     << ", Bullet: " << obj.m_bullets
+     << ", Obstacle: " << obj.m_obstacles
+     << "}";
+  return os;
+}

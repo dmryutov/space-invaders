@@ -17,3 +17,10 @@ TEST(obstacle_test, test_construction_exception)
 {
   EXPECT_THROW(Obstacle(1, 0), std::exception);
 }
+
+TEST(obstacle_test, test_output)
+{
+  std::stringstream ss;
+  ss << Obstacle(1, 3);
+  EXPECT_EQ(ss.str(), "Obstacle: {Position: Point2D {280, 380}, Health: 10}");
+}

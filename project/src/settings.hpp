@@ -1,5 +1,7 @@
 #pragma once
 
+#include "log.hpp"
+
 namespace Settings
 {
 
