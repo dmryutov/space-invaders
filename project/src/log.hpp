@@ -49,14 +49,14 @@ private:
   };
 };
 
-Logger::~Logger()
+inline Logger::~Logger()
 {
   m_os << std::endl;
-  std::cout << m_os.str();
+  std::clog << m_os.str();
   fflush(stdout);
 }
 
-std::ostringstream & Logger::Get(TLogLevel level)
+inline std::ostringstream & Logger::Get(TLogLevel level)
 {
   m_os << "- " << NowTime() << " "
        << m_color[level] << m_text[level]
@@ -64,7 +64,7 @@ std::ostringstream & Logger::Get(TLogLevel level)
   return m_os;
 }
 
-std::string Logger::NowTime()
+inline std::string Logger::NowTime()
 {
   struct timeval tv;
   gettimeofday(&tv, NULL);
