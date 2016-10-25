@@ -33,14 +33,14 @@ private:
   std::string NowTime();
 
   std::ostringstream m_os;
-  std::unordered_map<int, char const *> m_color
+  std::unordered_map<int, std::string> m_color
   {
     {LOG_DEBUG, BLACK},
     {LOG_INFO, GREEN},
     {LOG_WARNING, YELLOW},
     {LOG_ERROR, RED}
   };
-  std::unordered_map<int, char const *> m_text
+  std::unordered_map<int, std::string> m_text
   {
     {LOG_DEBUG, "DEBUG"},
     {LOG_INFO, "INFO"},
