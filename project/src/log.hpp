@@ -4,8 +4,9 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <chrono>
+#include <iomanip>
 #include <stdio.h>
-#include <sys/time.h>
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"  // Black
@@ -23,24 +24,46 @@ public:
   // Constructor
   Logger() = default;
   // Destructor
-  ~Logger();
+  ~Logger()
+  {
+    m_os << std::endl;
+    std::clog << m_os.str();
+    fflush(stdout);
+  }
 
-  std::ostringstream& Get(TLogLevel level = LOG_INFO);
+  std::ostringstream& Get(TLogLevel level = LOG_INFO)
+  {
+    m_os << "- " << NowTime() << " "
+         << m_color[level] << m_text[level]
+         << RESET << ": ";
+    return m_os;
+  }
 private:
   // Delete copy constructor and operator
   Logger(Logger const & obj) = delete;
   Logger& operator = (Logger const & obj) = delete;
-  std::string NowTime();
+
+  std::string NowTime()
+  {
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch())
+              - std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch());
+  
+    std::stringstream os;
+    os << std::put_time(std::localtime(&time), "%Y.%m.%d %H:%M:%S:") << ms.count();
+    return os.str();
+  }
 
   std::ostringstream m_os;
-  std::unordered_map<int, char const *> m_color
+  std::unordered_map<int, std::string> m_color
   {
     {LOG_DEBUG, BLACK},
     {LOG_INFO, GREEN},
     {LOG_WARNING, YELLOW},
     {LOG_ERROR, RED}
   };
-  std::unordered_map<int, char const *> m_text
+  std::unordered_map<int, std::string> m_text
   {
     {LOG_DEBUG, "DEBUG"},
     {LOG_INFO, "INFO"},
@@ -48,33 +71,6 @@ private:
     {LOG_ERROR, "ERROR"}
   };
 };
-
-Logger::~Logger()
-{
-  m_os << std::endl;
-  std::cout << m_os.str();
-  fflush(stdout);
-}
-
-std::ostringstream & Logger::Get(TLogLevel level)
-{
-  m_os << "- " << NowTime() << " "
-       << m_color[level] << m_text[level]
-       << RESET << ": ";
-  return m_os;
-}
-
-std::string Logger::NowTime()
-{
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  struct tm *tm = localtime(&tv.tv_sec);
-  char time[30];
-  strftime(time, sizeof (time), "%d.%m.%Y %H:%M:%S:%%06u", tm);
-  char buf[30];
-  snprintf(buf, sizeof (buf), time, tv.tv_usec/1000);
-  return buf;
-}
 
 template<typename T, template<typename, typename...> class C, typename... Args>
 inline std::ostream & operator << (std::ostream & os, C<T, Args...> const & objs)
