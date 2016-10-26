@@ -6,6 +6,9 @@
 class Bullet: public GameEntity
 {
 public:
+  // Operator <<
+  friend std::ostream & operator << (std::ostream & os, Bullet const & obj);
+
   // Constructor
   Bullet(float x, float y, bool fromPlayer)
     : m_fromPlayer(fromPlayer)
@@ -31,3 +34,13 @@ public:
 
   bool m_fromPlayer;
 };
+
+inline std::ostream & operator << (std::ostream & os, Bullet const & obj)
+{
+  os << "Bullet" << ": {"
+     << "Position: " << obj.m_position
+     << ", Speed: " << obj.m_speed
+     << ", FromPlayer: " << obj.m_fromPlayer
+     << "}";
+  return os;
+}

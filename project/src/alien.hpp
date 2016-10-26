@@ -8,6 +8,9 @@
 class Alien: public GameEntity
 {
 public:
+  // Operator <<
+  friend std::ostream & operator << (std::ostream & os, Alien const & obj);
+
   // Constructor
   Alien(float x, float y, int speed, int health)
   {
@@ -28,3 +31,13 @@ public:
 
   int m_score = 10;
 };
+
+inline std::ostream & operator << (std::ostream & os, Alien const & obj)
+{
+  os << "Alien" << ": {"
+     << "Position: " << obj.m_position
+     << ", Speed: " << obj.m_speed
+     << ", Health: " << obj.m_health
+     << "}";
+  return os;
+}

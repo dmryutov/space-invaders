@@ -8,6 +8,9 @@
 class Gun: public GameEntity
 {
 public:
+  // Operator <<
+  friend std::ostream & operator << (std::ostream & os, Gun const & obj);
+
   // Constructor
   Gun() = default;
 
@@ -33,3 +36,13 @@ public:
     bullets.emplace_back(Bullet(m_position.x() + m_width / 2, m_position.y(), true));
   }
 };
+
+inline std::ostream & operator << (std::ostream & os, Gun const & obj)
+{
+  os << "Gun" << ": {"
+     << "Position: " << obj.m_position
+     << ", Health: " << obj.m_health
+     << ", Speed: "<< obj.m_speed
+     << "}";
+  return os;
+}

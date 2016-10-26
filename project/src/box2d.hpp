@@ -120,7 +120,7 @@ private:
   Point2D m_max {1, 1};
 };
 
-std::ostream & operator << (std::ostream & os, Box2D const & obj)
+inline std::ostream & operator << (std::ostream & os, Box2D const & obj)
 {
   os << "Box2D { " << obj.boxMin() << ", " << obj.boxMax() << " }";
   return os;

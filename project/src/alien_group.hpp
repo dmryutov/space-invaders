@@ -11,6 +11,9 @@
 class AlienGroup: public GameEntity
 {
 public:
+  // Operator <<
+  friend std::ostream & operator << (std::ostream & os, AlienGroup const & obj);
+
   // Constructor
   AlienGroup() = default;
 
@@ -107,3 +110,15 @@ public:
   std::list<Alien> m_aliens;
   float m_shootPossibility = 1;
 };
+
+inline std::ostream & operator << (std::ostream & os, AlienGroup const & obj)
+{
+  os << "AlienGroup" << ": {"
+     << "Position: " << obj.m_position
+     << ", Speed: " << obj.m_speed
+     << ", Health: " << obj.m_health
+     << ", ShootPossibility: " << obj.m_shootPossibility
+     << ", Alien: " << obj.m_aliens
+     << "}";
+  return os;
+}

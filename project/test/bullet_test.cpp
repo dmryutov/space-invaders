@@ -29,3 +29,10 @@ TEST(bullet_test, test_move)
   b2.Move();
   EXPECT_EQ(b2.m_position, Point2D(48, 50));
 }
+
+TEST(bullet_test, test_output)
+{
+  std::stringstream ss;
+  ss << Bullet(50, 40, true);
+  EXPECT_EQ(ss.str(), "Bullet: {Position: Point2D {48, 36}, Speed: 10, FromPlayer: 1}");
+}
