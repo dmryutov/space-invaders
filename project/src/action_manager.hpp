@@ -15,6 +15,8 @@ public:
 
     m_keys[32] = KEY_SHOOT;  // Space
     m_keys[13] = KEY_ENTER;  // Enter
+    m_keys['P'] = KEY_PAUSE;
+    m_keys['p'] = KEY_PAUSE;
     m_keys[27] = KEY_QUIT;  // Esc
     m_keys['Q'] = KEY_QUIT;
     m_keys['q'] = KEY_QUIT;
@@ -26,7 +28,7 @@ public:
     return it != m_keys.end() ? it->second : -1;
   }
 
-  enum Keys {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_SHOOT, KEY_QUIT, KEY_ENTER};
+  enum Keys {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_SHOOT, KEY_ENTER, KEY_PAUSE, KEY_QUIT};
 private:
   std::unordered_map<char, char> m_keys;
 };

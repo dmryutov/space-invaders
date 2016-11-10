@@ -7,6 +7,7 @@
 #include <chrono>
 #include <iomanip>
 #include <stdio.h>
+#include "patterns.hpp"
 
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"  // Black
@@ -14,34 +15,25 @@
 #define GREEN   "\033[32m"  // Green
 #define YELLOW  "\033[33m"  // Yellow
 #define LOG(level) \
-  Logger().Get(level)
+  Logger::Instance(level)
 
 enum TLogLevel {LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG};
 
-class Logger
+class Logger: public Singleton<Logger>
 {
 public:
-  // Constructor
-  Logger() = default;
-  // Destructor
-  ~Logger()
+  template <typename T> Logger &operator << (T const & obj)
   {
-    m_os << std::endl;
-    std::clog << m_os.str();
-    fflush(stdout);
-  }
-
-  std::ostringstream& Get(TLogLevel level = LOG_INFO)
-  {
-    m_os << "- " << NowTime() << " "
-         << m_color[level] << m_text[level]
-         << RESET << ": ";
-    return m_os;
+    std::clog << "- " << NowTime() << " "
+              << m_color[m_level] << m_text[m_level] << RESET << ": "
+              << obj << std::endl;
+    return *this;
   }
 private:
-  // Delete copy constructor and operator
-  Logger(Logger const & obj) = delete;
-  Logger& operator = (Logger const & obj) = delete;
+  friend class Singleton<Logger>;
+
+  // Constructor
+  Logger() = default;
 
   std::string NowTime()
   {
@@ -55,7 +47,7 @@ private:
     return os.str();
   }
 
-  std::ostringstream m_os;
+  int m_level;
   std::unordered_map<int, std::string> m_color
   {
     {LOG_DEBUG, BLACK},

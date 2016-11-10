@@ -7,15 +7,14 @@
 #include "alien_group.hpp"
 #include "bullet.hpp"
 #include "obstacle.hpp"
+#include "patterns.hpp"
 
-class Game
+class Game: public Singleton<Game>
 {
 public:
+  using TOnUpdateHandler = std::function<void()>;
   // Operator <<
   friend std::ostream & operator << (std::ostream & os, Game const & obj);
-
-  // Constructor
-  Game() = default;
 
   // Functionality
   void Start()
@@ -37,13 +36,13 @@ public:
           m_menuItem++;
         break;
       case ActionManager::KEY_LEFT:
-        m_gun.Move(GameEntity::MOVE_LEFT);
+        m_gun->Move(GameEntity::MOVE_LEFT);
         break;
       case ActionManager::KEY_RIGHT:
-        m_gun.Move(GameEntity::MOVE_RIGHT);
+        m_gun->Move(GameEntity::MOVE_RIGHT);
         break;
       case ActionManager::KEY_SHOOT:
-        m_gun.Shoot(m_bullets);
+        m_gun->Shoot(m_bullets);
         break;
       case ActionManager::KEY_ENTER:
         // Start menu
@@ -64,6 +63,12 @@ public:
           break;
         }
         break;
+      case ActionManager::KEY_PAUSE:
+        if (m_state == PAUSE)
+          m_state = GAME;
+        else if (m_state == GAME)
+          m_state = PAUSE;
+        break;
       case ActionManager::KEY_QUIT:
         m_exitGame = true;
         break;
@@ -77,8 +82,8 @@ public:
     {
       case MENU:
         m_renderer.DrawMenu(m_menuItem);
-        m_gun.Reset();
-        m_alien.Reset();
+        m_gun->Reset();
+        m_alien->Reset();
         break;
       case LOAD_LEVEL:
         LoadLevel();
@@ -86,6 +91,10 @@ public:
       case GAME:
         Draw();
         Logic();
+        break;
+      case PAUSE:
+        Draw();
+        // Some action
         break;
       case FAIL:
         m_renderer.DrawEndMenu(m_score, m_menuItem);
@@ -95,9 +104,25 @@ public:
     LOG(LOG_DEBUG) << *this;
   }
 
+  void SetUpdateHandler(TOnUpdateHandler const & handler)
+  {
+    m_updateHandler = handler;
+  }
+
+  void Pause()
+  {
+    if (m_updateHandler != nullptr)
+      m_updateHandler();
+  }
+
   bool m_exitGame = false;
 
 private:
+  friend class Singleton<Game>;
+
+  // Constructor
+  Game() = default;
+
   void LoadLevel()
   {
     m_level++;
@@ -105,9 +130,9 @@ private:
     // Delete bullets
     m_bullets.clear();
     // Load gun
-    m_gun.Create();
+    m_gun->Create();
     // Load aliens
-    m_alien.Create(m_level);
+    m_alien->Create(m_level);
 
     // Load obstacles
     int obstacleCount = 3;
@@ -123,26 +148,32 @@ private:
 
     // Draw load screen
     m_renderer.DrawLevelLoad(m_level);
+
+    // Set gun pause handler
+    SetUpdateHandler([this]()
+    {
+      m_gun->m_pause = (m_state == PAUSE);
+    });
   }
 
   void Draw()
   {
     // Draw objects
-    m_renderer.DrawPanel(m_score, m_level, m_gun.m_health);
+    m_renderer.DrawPanel(m_score, m_level, m_gun->m_health);
     for (auto const & bullet : m_bullets)
       m_renderer.Draw(bullet);
     for (auto const & obstacle : m_obstacles)
       m_renderer.Draw(obstacle);
-    m_renderer.Draw(m_gun);
-    m_alien.Draw(m_renderer);
+    m_renderer.Draw(*m_gun);
+    m_alien->Draw(m_renderer);
   }
 
   void Logic()
   {
     // Move aliens
-    m_alien.Move();
+    m_alien->Move();
     // Shoot
-    m_alien.Shoot(m_gun, m_bullets);
+    m_alien->Shoot(*m_gun, m_bullets);
 
     try
     {
@@ -172,7 +203,7 @@ private:
         if (skip) continue;
 
         // Kill aliens
-        for (auto alien = m_alien.m_aliens.begin(); alien != m_alien.m_aliens.end(); )
+        for (auto alien = m_alien->m_aliens.begin(); alien != m_alien->m_aliens.end(); )
         {
           if (bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(alien->m_position, alien->m_width, alien->m_height)))
           {
@@ -181,7 +212,7 @@ private:
             if (alien->m_health == 0)
             {
               m_score += alien->m_score;
-             alien = m_alien.m_aliens.erase(alien);
+             alien = m_alien->m_aliens.erase(alien);
             }
             skip = true;
             break;
@@ -197,9 +228,9 @@ private:
         if (bullet->m_position.y() < 70 || bullet->m_position.y() + bullet->m_height > Settings::windowHeight - 20)
           bullet = m_bullets.erase(bullet);
         // Kill gun
-        else if (!bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(m_gun.m_position, m_gun.m_width, m_gun.m_height)))
+        else if (!bullet->m_fromPlayer && bulletBox.IntersectBox(Box2D(m_gun->m_position, m_gun->m_width, m_gun->m_height)))
         {
-          m_gun.m_health--;
+          m_gun->m_health--;
           bullet = m_bullets.erase(bullet);
         }
         // Move bullets
@@ -217,25 +248,26 @@ private:
 
 
     // Change game state
-    if (m_alien.m_aliens.size() == 0)
+    if (m_alien->m_aliens.size() == 0)
       m_state = LOAD_LEVEL;
-    else if (m_gun.m_health <= 0)
+    else if (m_gun->m_health <= 0)
       m_state = FAIL;
   }
 
-  enum m_stateArray {MENU, LOAD_LEVEL, GAME, FAIL};  // Game states
+  enum m_stateArray {MENU, LOAD_LEVEL, GAME, PAUSE, FAIL};  // Game states
   m_stateArray m_state = MENU;
   int m_score = 0;
   int m_level = 0;
   int m_menuItem = 0;
 
   Renderer m_renderer;
-  Gun m_gun;
-  AlienGroup m_alien;
+  std::unique_ptr<Gun> m_gun = Settings::factory.Create<Gun>();
+  std::unique_ptr<AlienGroup> m_alien = Settings::factory.Create<AlienGroup>();
   std::list<Obstacle> m_obstacles;
   std::list<Bullet> m_bullets;
 
   ActionManager m_actionManager;
+  TOnUpdateHandler m_updateHandler;
 };
 
 inline std::ostream & operator << (std::ostream & os, Game const & obj)
@@ -244,8 +276,8 @@ inline std::ostream & operator << (std::ostream & os, Game const & obj)
      << "Score: " << obj.m_score
      << ", Level: " << obj.m_level
      << ", State: " << obj.m_state
-     << ", Gun: " << obj.m_gun
-     << ", AlienGroup: " << obj.m_alien
+     << ", Gun: " << *(obj.m_gun)
+     << ", AlienGroup: " << *(obj.m_alien)
      << ", Bullet: " << obj.m_bullets
      << ", Obstacle: " << obj.m_obstacles
      << "}";

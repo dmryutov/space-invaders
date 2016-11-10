@@ -33,7 +33,8 @@ public:
 
   void Shoot(std::list<Bullet> & bullets)
   {
-    bullets.emplace_back(Bullet(m_position.x() + m_width / 2, m_position.y(), true));
+    if (!m_pause)
+      bullets.emplace_back(Bullet(m_position.x() + m_width / 2, m_position.y(), true));
   }
 };
 
