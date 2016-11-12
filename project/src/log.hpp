@@ -19,7 +19,7 @@
 
 enum TLogLevel {LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG};
 
-class Logger: public Singleton<Logger>
+class Logger: public SingletonLogger<Logger>
 {
 public:
   template <typename T> Logger &operator << (T const & obj)
@@ -30,7 +30,7 @@ public:
     return *this;
   }
 private:
-  friend class Singleton<Logger>;
+  friend class SingletonLogger<Logger>;
 
   // Constructor
   Logger() = default;

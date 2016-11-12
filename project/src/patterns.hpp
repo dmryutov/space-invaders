@@ -8,12 +8,6 @@ public:
     static T inst;
     return inst;
   }
-  static T & Instance(int level)
-  {
-    static T inst;
-    inst.m_level = level;
-    return inst;
-  }
 protected:
   // Constructor
   Singleton() = default;
@@ -25,6 +19,28 @@ protected:
   // Delete move
   Singleton(Singleton &&) = delete;
   Singleton & operator = (Singleton &&) = delete;
+};
+
+template<typename T> class SingletonLogger
+{
+public:
+  static T & Instance(int level)
+  {
+    static T inst;
+    inst.m_level = level;
+    return inst;
+  }
+protected:
+  // Constructor
+  SingletonLogger() = default;
+  // Destructor
+  virtual ~SingletonLogger() = default;
+  // Delete copy
+  SingletonLogger(SingletonLogger const &) = delete;
+  SingletonLogger & operator = (SingletonLogger const &) = delete;
+  // Delete move
+  SingletonLogger(SingletonLogger &&) = delete;
+  SingletonLogger & operator = (SingletonLogger &&) = delete;
 };
 
 
