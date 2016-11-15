@@ -17,6 +17,8 @@ public:
   // Functionality
   void Move(MoveDirection const direction)
   {
+    if (m_pause)
+      return;
     // Move game object
     if (direction == MOVE_LEFT && m_position.x() - m_speed > 0)
       m_position.x() -= m_speed;
@@ -32,6 +34,7 @@ public:
   float m_width = 1;
   float m_height = 1;
   int m_health = 1;
+  bool m_pause = false;
 protected:
   float m_speed = 10;
 };

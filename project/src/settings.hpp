@@ -1,9 +1,11 @@
 #pragma once
 
 #include "log.hpp"
+#include "patterns.hpp"
 
 namespace Settings
 {
+Factory factory;
 
 int const windowWidth = 640;
 int const windowHeight = 480;

@@ -1,29 +1,27 @@
 #include "game.hpp"
 
-Game game;
-
 // Callback function
 void KeyInput(int key, int x, int y)
 {
-  game.KeyInput(key);
+  Game::Instance().KeyInput(key);
 }
 
 // Callback function
 void Draw()
 {
-  game.Tick();
+  Game::Instance().Tick();
 }
 
 // Callback function
 void Timer(int = 0)
 {
-  if (game.m_exitGame)
-    game.Tick();
+  if (Game::Instance().m_exitGame)
+    Game::Instance().Tick();
 }
 
 int main (int argc, char **argv)
 {
-  game.Start();
+  Game::Instance().Start();
 
   // Load game window
 
