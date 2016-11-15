@@ -32,13 +32,11 @@ public:
     m_shootPossibility += Settings::alienShootPossibilityInc;
     int health = 1 + level / Settings::alienHealthInc;
 
-    int rowCount = 3;
-    int colCount = 10;
     // Alien group dimensions
     float w, h = 70;
     float gap = 1.5;
-    float alienWidth = gap * Settings::alienWidth * colCount;
-    float alienHeight = gap * Settings::alienHeight * rowCount;
+    float alienWidth = gap * Settings::alienWidth * Settings::alienCol;
+    float alienHeight = gap * Settings::alienHeight * Settings::alienRow;
     m_width = alienWidth - (gap - 1) * Settings::alienWidth;
     m_height = alienHeight - (gap - 1) * Settings::alienHeight;
 
@@ -47,10 +45,10 @@ public:
     
     // Create aliens
     m_aliens.clear();
-    for (int i = 0; i < rowCount; ++i)
+    for (int i = 0; i < Settings::alienRow; ++i)
     {
       w = m_position.x();
-      for (int j = 0; j < colCount; ++j)
+      for (int j = 0; j < Settings::alienCol; ++j)
       {
         m_aliens.push_back(Alien(w, h, m_speed, health));
         w += gap * Settings::alienWidth;
