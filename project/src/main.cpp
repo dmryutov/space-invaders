@@ -1,29 +1,18 @@
-#include "game.hpp"
+#include <QApplication>
+#include <QMainWindow>
+#include <QSurfaceFormat>
+#include "mainwindow.hpp"
 
-// Callback function
-void KeyInput(int key, int x, int y)
+int main(int argc, char ** argv)
 {
-  Game::Instance().KeyInput(key);
-}
+  QApplication a(argc, argv);
 
-// Callback function
-void Draw()
-{
-  Game::Instance().Tick();
-}
+  QSurfaceFormat format;
+  format.setDepthBufferSize(24);
+  format.setStencilBufferSize(8);
+  QSurfaceFormat::setDefaultFormat(format);
 
-// Callback function
-void Timer(int = 0)
-{
-  if (Game::Instance().m_exitGame)
-    Game::Instance().Tick();
-}
-
-int main (int argc, char **argv)
-{
-  Game::Instance().Start();
-
-  // Load game window
-
-  return 0;
+  MainWindow mw;
+  mw.show();
+  return a.exec();
 }

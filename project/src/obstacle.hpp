@@ -15,7 +15,7 @@ public:
     if (total < 1)
       throw std::invalid_argument("Amount of obstacles should be greater than 0!");
 
-    m_health = 10;
+    m_health = Settings::obstacleHealth;
     // Dimensions
     m_width = Settings::obstacleWidth;
     m_height = Settings::obstacleHeight;

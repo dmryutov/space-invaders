@@ -20,6 +20,9 @@ public:
   void Start()
   {
     // Load textures from .bmp
+
+
+    m_state = LOAD_LEVEL;
   }
 
   void KeyInput(int key)
@@ -135,11 +138,10 @@ private:
     m_alien->Create(m_level);
 
     // Load obstacles
-    int obstacleCount = 3;
     try
     {
-      for (int i = 0; i < obstacleCount; ++i)
-        m_obstacles.push_back(Obstacle(i, obstacleCount));
+      for (int i = 0; i < Settings::obstacleCount; ++i)
+        m_obstacles.push_back(Obstacle(i, Settings::obstacleCount));
     }
     catch (std::exception const & ex)
     {
