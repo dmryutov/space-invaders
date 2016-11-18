@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QPaintEngine>
 #include <math.h>
+#include <Qtime>
 
 TexturedRect::~TexturedRect()
 {
@@ -29,15 +30,16 @@ bool TexturedRect::Initialize(QOpenGLFunctions * functions)
     "  v_texCoord = a_texCoord;\n"
     "}\n";
   if (!m_vertexShader->compileSourceCode(vsrc)) return false;
-
   m_fragmentShader = new QOpenGLShader(QOpenGLShader::Fragment);
   char const * fsrc =
     "varying highp vec2 v_texCoord;\n"
     "uniform sampler2D tex;\n"
+    "uniform float time;\n"
     "void main(void)\n"
     "{\n"
     "  highp vec4 color = texture2D(tex, v_texCoord);\n"
-    "  gl_FragColor = clamp(color, 0.0, 1.0);\n"
+    "  float n = sin(time) * 0.5 + 0.5;\n"
+    "  gl_FragColor = vec4(color.r, color.g, color.b, n) * color.a;\n"
     "}\n";
   if (!m_fragmentShader->compileSourceCode(fsrc)) return false;
 
@@ -50,6 +52,7 @@ bool TexturedRect::Initialize(QOpenGLFunctions * functions)
   m_texCoordAttr = m_program->attributeLocation("a_texCoord");
   m_modelViewProjectionUniform = m_program->uniformLocation("u_modelViewProjection");
   m_textureUniform = m_program->uniformLocation("tex");
+  m_time = m_program->uniformLocation("time");
 
   m_vbo.create();
   std::vector<float> data
@@ -75,6 +78,9 @@ void TexturedRect::Render(QOpenGLTexture * texture, QVector2D const & position,
   if (texture == nullptr) return;
 
   QMatrix4x4 mvp;
+  QTime t;
+  t.start();
+
   mvp.translate(2.0f * position.x() / screenSize.width() - 1.0f,
                 2.0f * position.y() / screenSize.height() - 1.0f);
   mvp.scale(static_cast<float>(size.width()) / screenSize.width(),
@@ -82,6 +88,9 @@ void TexturedRect::Render(QOpenGLTexture * texture, QVector2D const & position,
 
   m_program->bind();
   m_program->setUniformValue(m_textureUniform, 0); // use texture unit 0
+
+  m_program->setUniformValue(m_time, (float)t.msec()/100);
+
   m_program->setUniformValue(m_modelViewProjectionUniform, mvp);
   texture->bind();
   m_program->enableAttributeArray(m_positionAttr);

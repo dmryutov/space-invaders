@@ -1,33 +1,19 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QTimer>
 #include <QGridLayout>
 #include <QOpenGLWidget>
-#include <QSpinBox>
 
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
 
 public:
-  MainWindow(QWidget *parent = 0);
-  ~MainWindow();
+  MainWindow();
+
 private:
-  QSpinBox * m_alienRow;
-  QSpinBox * m_alienCol;
-  QSpinBox * m_obstacleCount;
-
-  // From example
-  /*QTimer * m_timer = nullptr;
+  QTimer * m_timer = nullptr;
   QGridLayout * m_layout = nullptr;
-  QOpenGLWidget * m_glWidget = nullptr;*/
-
-private slots:
-  void OnDifficultyChanged(int);
-  void OnStartClicked();
-  void OnExitClicked();
+  QOpenGLWidget * m_glWidget = nullptr;
 };
-
-#endif // MAINWINDOW_H

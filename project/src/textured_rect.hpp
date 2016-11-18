@@ -31,4 +31,5 @@ private:
   int m_texCoordAttr = 0;
   int m_modelViewProjectionUniform = 0;
   int m_textureUniform = 0;
+  int m_time = 0;
 };

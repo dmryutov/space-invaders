@@ -8,6 +8,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QGuiApplication>
 #include <cmath>
+#include <random>
 
 #include <iostream>
 
@@ -65,6 +66,7 @@ void GLWidget::initializeGL()
   m_texturedRect->Initialize(this);
 
   m_texture = new QOpenGLTexture(QImage("data/alien.png"));
+  m_star = new QOpenGLTexture(QImage("data/star.png"));
 
   m_time.start();
 }
@@ -85,7 +87,7 @@ void GLWidget::paintGL()
   glCullFace(GL_BACK);
   glEnable(GL_CULL_FACE);
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Render();
 
@@ -134,9 +136,24 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::Render()
 {
+
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  std::mt19937 rd(m_time.second());
+  std::uniform_real_distribution<float> posX(20, (m_screenSize.width() - 40));
+  std::uniform_real_distribution<float> posY(20, (m_screenSize.height() - 40));
+  const int size = 20;
+
+  //Create stars
+  for(int i = 1; i < 100; i++)
+  {
+    m_texturedRect->Render(m_star, QVector2D(posX(rd), posY(rd)), QSize(size, size), m_screenSize);
+  }
+
+  glBlendFunc (GL_ONE, GL_ONE);
+
   m_texturedRect->Render(m_texture, m_position, QSize(128, 128), m_screenSize);
-  m_texturedRect->Render(m_texture, QVector2D(400, 400), QSize(128, 128), m_screenSize);
-  m_texturedRect->Render(m_texture, QVector2D(600, 600), QSize(128, 128), m_screenSize);
+
 }
 
 void GLWidget::mousePressEvent(QMouseEvent * e)
