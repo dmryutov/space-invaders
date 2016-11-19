@@ -46,8 +46,9 @@ GLWidget::GLWidget(MainWindow * mw, QColor const & background)
   : m_mainWindow(mw)
   , m_background(background)
 {
-  setMinimumSize(1024, 768);
+  setFixedSize(1024, 768);
   setFocusPolicy(Qt::StrongFocus);
+  setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 GLWidget::~GLWidget()
