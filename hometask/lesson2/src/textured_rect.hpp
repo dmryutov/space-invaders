@@ -32,4 +32,6 @@ private:
   int m_modelViewProjectionUniform = 0;
   int m_textureUniform = 0;
   int m_time = 0;
+  float m_posx = 0;
 };
+
