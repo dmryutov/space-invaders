@@ -21,11 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
   // Window parameters
   setFixedSize(640, 480);
   setWindowTitle("Space Invaders");
-  // Background
-  /*QPalette Pal(palette());
-  Pal.setColor(QPalette::Background, QColor(7, 47, 69));
-  setAutoFillBackground(true);
-  setPalette(Pal);*/
 
   // Main menu layout
   QWidget * menuWidget = new QWidget(this);
@@ -35,8 +30,6 @@ MainWindow::MainWindow(QWidget *parent)
   QLabel * label = new QLabel("SPACE INVADERS", menuWidget);
   label->setGeometry(150, 20, 346, 45);
   label->setFont(QFont("Arial", 40));
-  /*Pal.setColor(label->foregroundRole(), Qt::white);
-  label->setPalette(Pal);*/
 
   // Settings box
   QGroupBox * box = new QGroupBox("Settings", menuWidget);
