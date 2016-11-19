@@ -15,4 +15,6 @@ MainWindow::MainWindow()
   m_timer->start();
 
   setFocusPolicy(Qt::StrongFocus);
+  setFixedSize(1024, 768);
+  setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
