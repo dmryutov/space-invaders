@@ -67,6 +67,14 @@ void GLWidget::initializeGL()
 
   m_texture = new QOpenGLTexture(QImage("data/alien.png"));
   m_star = new QOpenGLTexture(QImage("data/star.png"));
+  
+  std::random_device rd;
+  std::default_random_engine e(rd());
+  std::uniform_real_distribution<double> posX(10, 1014);
+  std::uniform_real_distribution<double> posY(10, 758);
+
+  for(int i = 0; i < 100; i++)
+    m_stars.push_back(QVector2D(posX(e), posY(e)));
 
   m_time.start();
 }
@@ -136,19 +144,13 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::Render()
 {
-
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  std::mt19937 rd(m_time.second());
-  std::uniform_real_distribution<float> posX(20, (m_screenSize.width() - 40));
-  std::uniform_real_distribution<float> posY(20, (m_screenSize.height() - 40));
-  const int size = 20;
+  const int size = 10;
 
-  //Create stars
-  for(int i = 1; i < 100; i++)
-  {
-    m_texturedRect->Render(m_star, QVector2D(posX(rd), posY(rd)), QSize(size, size), m_screenSize);
-  }
+  //Create star
+  for(auto const & star:m_stars)
+    m_texturedRect->Render(m_star, star, QSize(size, size), m_screenSize);
 
   glBlendFunc (GL_ONE, GL_ONE);
 
