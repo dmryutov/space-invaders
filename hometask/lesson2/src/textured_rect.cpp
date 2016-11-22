@@ -35,10 +35,12 @@ bool TexturedRect::Initialize(QOpenGLFunctions * functions)
     "varying highp vec2 v_texCoord;\n"
     "uniform sampler2D tex;\n"
     "uniform float time;\n"
+    "uniform float posx;\n"
+    "uniform float posy;\n"
     "void main(void)\n"
     "{\n"
     "  highp vec4 color = texture2D(tex, v_texCoord);\n"
-    "  float n = sin(time) * 0.5 + 0.5;\n"
+    "  float n = sin((6.14*time + posx)/10.0 + 0.5);\n"
     "  gl_FragColor = vec4(color.r, color.g, color.b, n) * color.a;\n"
     "}\n";
   if (!m_fragmentShader->compileSourceCode(fsrc)) return false;
@@ -53,6 +55,7 @@ bool TexturedRect::Initialize(QOpenGLFunctions * functions)
   m_modelViewProjectionUniform = m_program->uniformLocation("u_modelViewProjection");
   m_textureUniform = m_program->uniformLocation("tex");
   m_time = m_program->uniformLocation("time");
+  m_posx = m_program->uniformLocation("posx");
 
   m_vbo.create();
   std::vector<float> data
@@ -90,6 +93,7 @@ void TexturedRect::Render(QOpenGLTexture * texture, QVector2D const & position,
   m_program->setUniformValue(m_textureUniform, 0); // use texture unit 0
 
   m_program->setUniformValue(m_time, (float)t.msec()/100);
+  m_program->setUniformValue(m_posx, position.x());
 
   m_program->setUniformValue(m_modelViewProjectionUniform, mvp);
   texture->bind();

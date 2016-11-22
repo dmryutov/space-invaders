@@ -47,8 +47,10 @@ private:
   QSize m_screenSize;
 
   QOpenGLTexture * m_texture = nullptr;
-  TexturedRect * m_texturedRect = nullptr;
   QOpenGLTexture * m_star = nullptr;
+  TexturedRect * m_texturedRect = nullptr;
+  
+  std::vector<QVector2D> m_stars;
 
   QVector2D m_position = QVector2D(200, 200);
   std::array<bool, 4> m_directions = { false, false, false, false };

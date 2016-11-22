@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -24,9 +25,18 @@ class Logger: public SingletonLogger<Logger>
 public:
   template <typename T> Logger &operator << (T const & obj)
   {
-    std::clog << "- " << NowTime() << " "
-              << m_color[m_level] << m_text[m_level] << RESET << ": "
-              << obj << std::endl;
+    std::ostringstream ss;
+    std::ofstream f("log.txt", std::ios_base::app | std::ios_base::out);
+    ss << "- " << NowTime() << " "
+       << m_color[m_level] << m_text[m_level] << RESET << ": "
+       << obj << std::endl;
+
+    std::clog << ss.str();
+    if (f.is_open())
+    {
+      f << ss.str();
+      f.close();
+    }
     return *this;
   }
 private:
