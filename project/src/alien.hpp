@@ -12,21 +12,21 @@ public:
   friend std::ostream & operator << (std::ostream & os, Alien const & obj);
 
   // Constructor
-  Alien(float x, float y, int speed, int health)
+  Alien(float x, float y, int speed, int texture, int level)
   {
-    m_speed = speed;
-    m_health = health;
-    // Dimensions
     m_width = Settings::alienWidth;
     m_height = Settings::alienHeight;
-    // Coords
     m_position = {x, y};
+
+    m_health = Settings::alienHealth + level / Settings::alienHealthInc;
+    m_speed = speed;
+    m_textureIndex = texture;
+    m_texture = &Renderer::Instance().m_alienTexture;
   }
 
-  // Functionality
   void Shoot(std::list<Bullet> & bullets)
   {
-    bullets.emplace_back(Bullet(m_position.x() + m_width/2, m_position.y() + m_height, false));
+    bullets.emplace_back(m_position.x(), m_position.y() - m_height / 2, false);
   }
 
   int m_score = 10;

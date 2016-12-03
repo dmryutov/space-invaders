@@ -1,5 +1,6 @@
 #pragma once
 
+// Singleton for classes with default constructors
 template<typename T> class Singleton
 {
 public:
@@ -21,6 +22,7 @@ protected:
   Singleton & operator = (Singleton &&) = delete;
 };
 
+// Singleton for Logger class
 template<typename T> class SingletonLogger
 {
 public:
@@ -43,7 +45,7 @@ protected:
   SingletonLogger & operator = (SingletonLogger &&) = delete;
 };
 
-
+// Factory for game objects
 class Factory
 {
 public:
