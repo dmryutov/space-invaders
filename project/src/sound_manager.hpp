@@ -21,7 +21,7 @@ public:
     m_sounds[sound]->stop();
   }
 
-  enum Sounds {MENU, SHOOT, EXPLOSION, WIN, FAIL};
+  enum Sounds {MENU, SHOOT, BONUS, EXPLOSION, WIN, FAIL};
 private:
   friend class Singleton<SoundManager>;
 
@@ -33,15 +33,17 @@ private:
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
     m_sounds.emplace_back(new QMediaPlayer());
-    m_sounds[0]->setPlaylist(m_playlist);
+    m_sounds[MENU]->setPlaylist(m_playlist);
     m_sounds.emplace_back(new QMediaPlayer());
-    m_sounds[1]->setMedia(QUrl("qrc:/data/sounds/shoot.wav"));
+    m_sounds[SHOOT]->setMedia(QUrl("qrc:/data/sounds/shoot.wav"));
     m_sounds.emplace_back(new QMediaPlayer());
-    m_sounds[2]->setMedia(QUrl("qrc:/data/sounds/explosion.wav"));
+    m_sounds[BONUS]->setMedia(QUrl("qrc:/data/sounds/bonus.wav"));
     m_sounds.emplace_back(new QMediaPlayer());
-    m_sounds[3]->setMedia(QUrl("qrc:/data/sounds/win.wav"));
+    m_sounds[EXPLOSION]->setMedia(QUrl("qrc:/data/sounds/explosion.wav"));
     m_sounds.emplace_back(new QMediaPlayer());
-    m_sounds[4]->setMedia(QUrl("qrc:/data/sounds/fail.wav"));
+    m_sounds[WIN]->setMedia(QUrl("qrc:/data/sounds/win.wav"));
+    m_sounds.emplace_back(new QMediaPlayer());
+    m_sounds[FAIL]->setMedia(QUrl("qrc:/data/sounds/fail.wav"));
   }
 
   // Destructor

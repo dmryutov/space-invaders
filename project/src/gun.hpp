@@ -40,7 +40,7 @@ public:
   {
     m_width = Settings::gunWidth;
     m_height = Settings::gunHeight;
-    m_position = {Settings::windowWidth / 2, m_height / 2};
+    m_position = {Settings::windowWidth / 2, m_height / 2 + 15};
     m_shootDelay = Settings::gunShootDelay;
   }
 

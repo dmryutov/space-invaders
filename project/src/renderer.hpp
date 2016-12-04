@@ -62,6 +62,8 @@ public:
     m_starTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
     m_questionTexture = new QOpenGLTexture(QImage(":/data/models/question.png"));
     m_questionTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
+    m_shieldTexture = new QOpenGLTexture(QImage(":/data/models/bonus/shield.png"));
+    m_shieldTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
     m_explosionTexture = new QOpenGLTexture(QImage(":/data/models/explosion.png"));
     m_explosionTexture->setMagnificationFilter(QOpenGLTexture::Nearest);
   }
@@ -95,6 +97,7 @@ public:
     delete m_heartTexture;
     delete m_starTexture;
     delete m_questionTexture;
+    delete m_shieldTexture;
     delete m_explosionTexture;
 
     delete m_texturedRect;
@@ -125,6 +128,14 @@ public:
     m_texturedRect->Render(obj.m_texture->at(obj.m_textureIndex), QVector2D(obj.m_position.x(), obj.m_position.y()), QSize(obj.m_width, obj.m_height), m_screenSize, Settings::resolutionRate);
   }
 
+  // Draw gun + shield
+  void DrawGun(GameEntity const & obj, bool shield)
+  {
+    Draw(obj);
+    if (shield)
+      m_texturedRect->Render(m_shieldTexture, QVector2D(obj.m_position.x(), obj.m_position.y()), QSize(obj.m_width*1.625, obj.m_height*1.625), m_screenSize, Settings::resolutionRate);
+  }
+
   // Draw explosions animation
   void DrawExplosion(Explosion const & obj)
   {
@@ -137,11 +148,15 @@ public:
     m_texturedRect->Render(m_starTexture, QVector2D(star.m_position.x(), star.m_position.y()), QSize(star.m_width, star.m_height), m_screenSize, Settings::resolutionRate, !isPause);
   }
 
-  void DrawPanel(int const score, int const level, int const health)
+  void DrawPanel(int const score, int const level, int const health, bool bonusShield, bool bonusWeapon)
   {
-    float x = Settings::windowWidth/2 - health * 40 / 2 + 20;
+    float x = Settings::windowWidth/2 - (health + bonusShield + bonusWeapon) * 40 / 2 + 20;
     for (int i = 0; i < health; ++i)
       m_texturedRect->Render(m_heartTexture, QVector2D(x + i*40, 560), QSize(30, 30), m_screenSize, Settings::resolutionRate);
+    if (bonusShield)
+      m_texturedRect->Render(m_bonusTexture[1], QVector2D(x + health*40 + 2, 560), QSize(26, 30), m_screenSize, Settings::resolutionRate);
+    if (bonusWeapon)
+      m_texturedRect->Render(m_bonusTexture[2], QVector2D(x + health*40 + 2, 560), QSize(26, 30), m_screenSize, Settings::resolutionRate);
 
     Blending(false);
 
@@ -230,6 +245,7 @@ public:
   QOpenGLTexture * m_heartTexture = nullptr;
   QOpenGLTexture * m_starTexture = nullptr;
   QOpenGLTexture * m_questionTexture = nullptr;
+  QOpenGLTexture * m_shieldTexture = nullptr;
   QOpenGLTexture * m_explosionTexture = nullptr;
   QSize m_screenSize;
   QPainter m_painter;

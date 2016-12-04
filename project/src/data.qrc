@@ -61,5 +61,7 @@
         <file>data/sounds/fail.wav</file>
         <file>data/sounds/win.wav</file>
         <file>data/models/explosion.png</file>
+        <file>data/models/bonus/shield.png</file>
+        <file>data/sounds/bonus.wav</file>
     </qresource>
 </RCC>

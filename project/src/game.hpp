@@ -272,13 +272,13 @@ private:
       Renderer::Instance().Draw(obstacle);
     for (auto const & explosion : m_explosions)
       Renderer::Instance().DrawExplosion(explosion);
-    Renderer::Instance().Draw(m_gun);
+    Renderer::Instance().DrawGun(m_gun, m_gun.m_shield);
 
     if (m_bonus != nullptr)
       Renderer::Instance().Draw(*m_bonus);
 
     // Draw interface
-    Renderer::Instance().DrawPanel(m_score, m_level, m_gun.m_health);
+    Renderer::Instance().DrawPanel(m_score, m_level, m_gun.m_health, m_shieldDuration>0, m_weaponDuration>0);
   }
 
   // Main game logic
@@ -406,19 +406,19 @@ private:
             case Bonus::HEALTH:
               m_gun.ChangeHealth(false);
 
-              LOG(LOG_DEBUG) << "Health:" + std::to_string(m_gun.m_health);
+              LOG(LOG_DEBUG) << "Bonus: Health - " + std::to_string(m_gun.m_health);
               break;
             case Bonus::SHIELD:
               m_shieldDuration++;
               m_gun.m_shield = true;
 
-              LOG(LOG_DEBUG) << "Shield:" + std::to_string(m_gun.m_shield);
+              LOG(LOG_DEBUG) << "Bonus: Shield - " + std::to_string(m_gun.m_shield);
               break;
             case Bonus::WEAPON:
               m_weaponDuration++;
               m_gun.m_shootDelay = Settings::gunShootBonusDelay;
 
-              LOG(LOG_DEBUG) << "Weapon:" + std::to_string(m_gun.m_shootDelay);
+              LOG(LOG_DEBUG) << "Bonus: Weapon - " + std::to_string(m_gun.m_shootDelay);
               break;
           }
           if (m_bonus != nullptr)
@@ -426,6 +426,7 @@ private:
             delete m_bonus;
             m_bonus = nullptr;
           }
+          SoundManager::Instance().Play(SoundManager::BONUS);
         }
         // Bonus is out of screen
         if (m_bonus != nullptr && m_bonus->m_position.y() - m_bonus->m_height / 2 < 1)
