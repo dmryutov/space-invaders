@@ -139,10 +139,7 @@ public:
   // Main game loop. Control game logic depending on game states
   void Tick()
   {
-    // Get duration between ticks
-    static std::chrono::time_point<std::chrono::steady_clock> lastCallTimestamp = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastCallTimestamp);
-    lastCallTimestamp = std::chrono::steady_clock::now();
+    int duration = GetTickDuration();
 
     switch (m_state)
     {
@@ -156,19 +153,19 @@ public:
         break;
       case LOAD_LEVEL:
         LoadLevel();
-        m_loadLevelDuration += duration.count();
+        m_loadLevelDuration += duration;
         break;
       case GAME:
         Draw();
         Logic();
         if (m_shootDuration > 0)
-          m_shootDuration += duration.count();
+          m_shootDuration += duration;
         if (m_weaponDuration > 0)
           m_weaponDuration++;
         if (m_shieldDuration > 0)
           m_shieldDuration ++;
         for (auto & explosion : m_explosions)
-          explosion.m_duration += duration.count();
+          explosion.m_duration += duration;
         break;
       case PAUSE:
         Draw();
@@ -462,9 +459,20 @@ private:
   void EndGame()
   {
     m_state = FAIL;
+    Settings::highScore = std::max(m_score, Settings::highScore);
+    Settings::Save();
     SoundManager::Instance().Stop(SoundManager::SHOOT);
     SoundManager::Instance().Stop(SoundManager::EXPLOSION);
     SoundManager::Instance().Play(SoundManager::FAIL);
+  }
+
+  // Get duration between ticks
+  int GetTickDuration()
+  {
+    static std::chrono::time_point<std::chrono::steady_clock> lastCallTimestamp = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - lastCallTimestamp);
+    lastCallTimestamp = std::chrono::steady_clock::now();
+    return duration.count();
   }
 
   enum m_gameStates {MENU, OPTIONS, LOAD_LEVEL, GAME, PAUSE, FAIL};

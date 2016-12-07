@@ -170,16 +170,6 @@ public:
     Blending(true);
   }
 
-  void DrawLevelLoad(int const level, int loadLevelDuration)
-  {
-    if (!(m_loadLevelPosition >= 340 && loadLevelDuration < Settings::loadLevelPause))
-      m_loadLevelPosition += Settings::loadLevelStep;
-
-    Blending(false);
-    DrawText("LEVEL " + QString::number(level), 0, m_loadLevelPosition, 100, Qt::white, true);
-    Blending(true);
-  }
-
   void DrawMenu(int const menuItem)
   {
     m_texturedRect->Render(m_menuAlienTexture, QVector2D(270, 303 - menuItem*45), QSize(40, 40), m_screenSize, Settings::resolutionRate);
@@ -220,6 +210,16 @@ public:
     Blending(true);
   }
 
+  void DrawLevelLoad(int const level, int loadLevelDuration)
+  {
+    if (!(m_loadLevelPosition >= 340 && loadLevelDuration < Settings::loadLevelPause))
+      m_loadLevelPosition += Settings::loadLevelStep;
+
+    Blending(false);
+    DrawText("LEVEL " + QString::number(level), 0, m_loadLevelPosition, 100, Qt::white, true);
+    Blending(true);
+  }
+
   void DrawEndMenu(int const score, int const menuItem)
   {
     m_texturedRect->Render(m_menuAlienTexture, QVector2D(270, 258 - menuItem*45), QSize(40, 40), m_screenSize, Settings::resolutionRate);
@@ -228,10 +228,12 @@ public:
     Blending(false);
 
     DrawText("GAME OVER", 170, 150, 100, Qt::white);
-    DrawText("SCORE", 280, 220, 50, Qt::white);
+    DrawText("HIGH SCORE", 210, 220, 50, Qt::white);
+    DrawText("SCORE", 340, 270, 50, Qt::white);
     DrawText("MENU", 352, 365, 50, Qt::white);
     DrawText("EXIT", 355, 410, 50, Qt::white);
-    DrawText(QString::number(score), 430, 220, 50, Qt::green);
+    DrawText(QString::number(Settings::highScore), 490, 220, 50, Qt::green);
+    DrawText(QString::number(score), 490, 270, 50, Qt::green);
 
     Blending(true);
   }

@@ -82,6 +82,7 @@ std::vector<std::pair<int, int>> const resolution {
   {1280, 960}
 };
 MainWindow * pMainWindow = nullptr;
+int highScore = 0;
 
 void SetDifficulty(int index)
 {
@@ -152,6 +153,8 @@ void Load(MainWindow * mw)
     difficultyItem = game.attribute("difficulty").as_int();
   if (game.attribute("resolution"))
     resolutionItem = game.attribute("resolution").as_int();
+  if (game.attribute("highscore"))
+    highScore = game.attribute("highscore").as_int();
   auto gun = doc.child("gun");
   if (gun.attribute("skin"))
     gunSkinItem = gun.attribute("skin").as_int();
@@ -176,6 +179,7 @@ void Save()
   auto game = tree.append_child("game");
   game.append_attribute("difficulty") = difficultyItem;
   game.append_attribute("resolution") = resolutionItem;
+  game.append_attribute("highscore") = highScore;
   auto gun = tree.append_child("gun");
   gun.append_attribute("skin") = gunSkinItem;
   tree.save_file("data/settings.xml");
