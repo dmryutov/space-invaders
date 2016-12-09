@@ -3,11 +3,13 @@
 #include <QMainWindow>
 #include <QDir>
 #include "PugiXML/pugixml.cpp"
+#include "file_settings.hpp"
 #include "log.hpp"
 #include "patterns.hpp"
 
 namespace Settings
 {
+std::string programPath;
 Factory factory;
 
 // Load level animation
@@ -68,6 +70,7 @@ int const explosionSpeed = 20;
 int const explosionFrames = 15;
 
 // Options
+std::string const settingsFile = "/data/settings.xml";
 int optionItem = 0;
 int difficultyItem = 1;
 int gunSkinItem = 0;
@@ -147,7 +150,7 @@ void Load(MainWindow * mw)
 {
   // Load settings
   pugi::xml_document doc;
-  doc.load_file("data/settings.xml");
+  doc.load_file((Settings::programPath + settingsFile).c_str());
   auto game = doc.child("game");
   if (game.attribute("difficulty"))
     difficultyItem = game.attribute("difficulty").as_int();
@@ -182,7 +185,7 @@ void Save()
   game.append_attribute("highscore") = highScore;
   auto gun = tree.append_child("gun");
   gun.append_attribute("skin") = gunSkinItem;
-  tree.save_file("data/settings.xml");
+  tree.save_file((Settings::programPath + settingsFile).c_str());
 
   SetDifficulty(difficultyItem);
 }
