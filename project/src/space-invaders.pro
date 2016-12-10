@@ -1,23 +1,28 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-11-12T15:58:34
+# Project created by QtCreator 2016-11-14T11:48:37
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui \
+    multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = invaders-Qt
+TARGET = invaders-GL
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     gl_widget.cpp \
     textured_rect.cpp
 
 HEADERS  += \
+    gl_widget.hpp \
+    mainwindow.hpp \
+    point2d.hpp \
+    textured_rect.hpp \
     action_manager.hpp \
     alien_group.hpp \
     alien.hpp \
@@ -29,10 +34,14 @@ HEADERS  += \
     log.hpp \
     obstacle.hpp \
     patterns.hpp \
-    point2d.hpp \
     ray2d.hpp \
     renderer.hpp \
     settings.hpp \
-    gl_widget.hpp \
-    textured_rect.hpp \
-    mainwindow.hpp
+    sound_manager.hpp \
+    star.hpp \
+    bonus.hpp \
+    explosion.hpp
+
+RESOURCES += data.qrc
+
+DISTFILES +=

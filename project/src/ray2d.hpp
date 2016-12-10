@@ -1,10 +1,11 @@
 #pragma once
 
-#include <iostream>
+#include <ostream>
 #include <cmath>
 #include <limits>
 #include "point2d.hpp"
 #include "box2d.hpp"
+#include "log.hpp"
 
 class Ray2D
 {
@@ -67,13 +68,11 @@ public:
     return !operator==(obj);
   }
 
-  // Functionality
+  // Check ray and box intersection
   bool IntersectBox(Box2D const & obj) const
   {
     Point2D unitVec = NormalizeVector(m_direction, m_origin);
-    //std::cout << "Unit = " << unitVec << std::endl;
     Point2D endPoint = m_origin + unitVec * std::numeric_limits<float>::max();
-    //std::cout << "EndPoint = " << endPoint << std::endl;
     double tMin = std::numeric_limits<double>::min(), tMax = std::numeric_limits<double>::max();
 
     for (int i = 0; i < 2; ++i)
@@ -93,6 +92,7 @@ public:
     return tMax > tMin && tMax > 0.0;
   }
 
+  // Check sector and box intersection
   bool IntersectSector(Box2D const & obj, float width)
   {
     float step = 0.2;
@@ -111,19 +111,19 @@ public:
     return res;
   }
 
+  // Normalize vector
   Point2D NormalizeVector(Point2D const m_dir, Point2D const m_orig) const
   {
     // Normalise direction vector
     float xDir = m_dir.x() - m_orig.x();  // x direction
     float yDir = m_dir.y() - m_orig.y();  // y direction
-
     // Length of direction vector
     float length = sqrt(xDir * xDir + yDir * yDir);
-    //std::cout << "Length = " << length << std::endl;
 
     return Point2D(xDir / length, yDir / length);
   }
 private:
+  // Check origin and direction equality
   void CheckInit()
   {
     try
@@ -133,7 +133,7 @@ private:
     }
     catch (std::exception const & ex)
     {
-      std::cerr << "[ERROR]\t" << ex.what();
+      LOG(LOG_ERROR) << ex.what();
       m_origin = {0, 0};
       m_direction = {1, 1};
     }

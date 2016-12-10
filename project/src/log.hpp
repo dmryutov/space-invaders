@@ -15,14 +15,14 @@
 #define RED     "\033[31m"  // Red
 #define GREEN   "\033[32m"  // Green
 #define YELLOW  "\033[33m"  // Yellow
-#define LOG(level) \
-  Logger::Instance(level)
+#define LOG(level) Logger::Instance(level)
 
 enum TLogLevel {LOG_ERROR, LOG_WARNING, LOG_INFO, LOG_DEBUG};
 
 class Logger: public SingletonLogger<Logger>
 {
 public:
+  // Write messages
   template <typename T> Logger &operator << (T const & obj)
   {
     std::ostringstream ss;
@@ -30,13 +30,14 @@ public:
     ss << "- " << NowTime() << " "
        << m_color[m_level] << m_text[m_level] << RESET << ": "
        << obj << std::endl;
-
-    std::clog << ss.str();
+    // Write to file
     if (f.is_open())
     {
-      f << ss.str();
+      //f << ss.str();
       f.close();
     }
+    // Write to console
+    std::clog << ss.str();
     return *this;
   }
 private:
@@ -45,6 +46,7 @@ private:
   // Constructor
   Logger() = default;
 
+  // Print current date and time
   std::string NowTime()
   {
     auto now = std::chrono::system_clock::now();
@@ -57,7 +59,6 @@ private:
     return os.str();
   }
 
-  int m_level;
   std::unordered_map<int, std::string> m_color
   {
     {LOG_DEBUG, BLACK},
@@ -72,8 +73,10 @@ private:
     {LOG_WARNING, "WARNING"},
     {LOG_ERROR, "ERROR"}
   };
+  int m_level;
 };
 
+// Write container to stream
 template<typename T, template<typename, typename...> class C, typename... Args>
 inline std::ostream & operator << (std::ostream & os, C<T, Args...> const & objs)
 {

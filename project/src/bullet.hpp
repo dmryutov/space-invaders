@@ -11,19 +11,17 @@ public:
 
   // Constructor
   Bullet(float x, float y, bool fromPlayer)
-    : m_fromPlayer(fromPlayer)
   {
-    // Dimensions
     m_width = Settings::bulletWidth;
     m_height = Settings::bulletHeight;
-    // Coords
-    if (fromPlayer)
-      m_position = {x - m_width / 2, y - m_height};
-    else
-      m_position = {x - m_width / 2, y};
+    m_position = {x, y};
+
+    m_fromPlayer = fromPlayer;
+    m_speed = Settings::bulletSpeed;
+    m_textureIndex = fromPlayer ? 0 : 1;
+    m_texture = &Renderer::Instance().m_bulletTexture;
   }
 
-  // Functionality
   void Move()
   {
     if (m_fromPlayer)

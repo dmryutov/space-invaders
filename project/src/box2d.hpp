@@ -1,7 +1,8 @@
 #pragma once
 
-#include <iostream>
+#include <ostream>
 #include "point2d.hpp"
+#include "log.hpp"
 
 class Box2D
 {
@@ -22,7 +23,7 @@ public:
   }
 
   Box2D(Point2D p1, float w, float h)
-    : m_min(p1), m_max(p1.x() + w, p1.y() + h)
+    : m_min(p1.x() - w/2, p1.y() - h/2), m_max(p1.x() + w/2, p1.y() + h/2)
   {
     PointSwap();
   }
@@ -70,7 +71,7 @@ public:
     return !operator==(obj);
   }
 
-  // Functionality
+  // Check boxes intersection
   bool IntersectBox(Box2D const & obj) const
   {
     // B1 is left of B2
@@ -87,17 +88,8 @@ public:
       return false;
     return true;
   }
-
-  float xMiddle()
-  {
-    return m_min.x() + (m_max.x() - m_min.x()) / 2;
-  }
-
-  float yMiddle()
-  {
-    return m_min.y() + (m_max.y() - m_min.y()) / 2;
-  }
 private:
+  // Swap points if min > max
   void PointSwap()
   {
     if (m_max < m_min)
@@ -110,7 +102,7 @@ private:
     }
     catch (std::exception const & ex)
     {
-      std::cerr << "[ERROR]\t" << ex.what();
+      LOG(LOG_ERROR) << ex.what();
       m_min = {0, 0};
       m_max = {1, 1};
     }
