@@ -77,7 +77,7 @@ private:
 };
 
 // Write container to stream
-template<typename T, template<typename, typename...> class C, typename... Args>
+/*template<typename T, template<typename, typename...> class C, typename... Args>
 inline std::ostream & operator << (std::ostream & os, C<T, Args...> const & objs)
 {
   os << "\n{\n";
@@ -85,4 +85,4 @@ inline std::ostream & operator << (std::ostream & os, C<T, Args...> const & objs
     os << obj << ",\n";
   os << "}";
   return os;
-}
+}*/

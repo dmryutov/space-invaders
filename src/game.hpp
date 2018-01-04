@@ -60,9 +60,11 @@ public:
       else if (m_state == OPTIONS)
       {
         ActionManager::Instance().SingleAction(ActionManager::KEY_RIGHT);
-        if (Settings::optionItem == 0 && Settings::difficultyItem != Settings::difficulty.size() - 1)
+		int difficultySize = Settings::difficulty.size();
+		int resolutionSize = Settings::resolution.size();
+		if (Settings::optionItem == 0 && Settings::difficultyItem != difficultySize - 1)
           Settings::difficultyItem++;
-        else if (Settings::optionItem == 1 && Settings::resolutionItem != Settings::resolution.size() - 1)
+		else if (Settings::optionItem == 1 && Settings::resolutionItem != resolutionSize - 1)
         {
           Settings::resolutionItem++;
           Settings::ChangeResolution();
@@ -505,8 +507,8 @@ inline std::ostream & operator << (std::ostream & os, Game const & obj)
      << ", State: " << obj.m_state
      << ", Gun: " << obj.m_gun
      << ", AlienGroup: " << *(obj.m_alien)
-     << ", Bullet: " << obj.m_bullets
-     << ", Obstacle: " << obj.m_obstacles
+	 //<< ", Bullet: " << obj.m_bullets
+	 //<< ", Obstacle: " << obj.m_obstacles
      << "}";
   return os;
 }

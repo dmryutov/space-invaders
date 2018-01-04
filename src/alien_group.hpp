@@ -111,7 +111,7 @@ inline std::ostream & operator << (std::ostream & os, AlienGroup const & obj)
      << ", Speed: " << obj.m_speed
      << ", Health: " << obj.m_health
      << ", ShootPossibility: " << obj.m_shootPossibility
-     << ", Alien: " << obj.m_aliens
+     //<< ", Alien: " << obj.m_aliens
      << "}";
   return os;
 }

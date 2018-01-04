@@ -11,14 +11,18 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = invaders-GL
 TEMPLATE = app
+LANGUAGE = C++
 
+CONFIG  += c++11
 
 SOURCES += main.cpp\
     mainwindow.cpp \
     gl_widget.cpp \
-    textured_rect.cpp
+    textured_rect.cpp \
+	../3rdparty/pugixml/pugixml.cpp
 
 HEADERS  += \
+	../3rdparty/pugixml/pugixml.hpp \
     gl_widget.hpp \
     mainwindow.hpp \
     point2d.hpp \
@@ -44,4 +48,6 @@ HEADERS  += \
 
 RESOURCES += data.qrc
 
-DISTFILES +=
+mingw {
+	LIBS += -lopengl32
+}

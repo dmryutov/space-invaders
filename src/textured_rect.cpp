@@ -2,7 +2,7 @@
 
 #include <QPainter>
 #include <QPaintEngine>
-#include <Qtime>
+#include <QTime>
 #include <math.h>
 
 TexturedRect::~TexturedRect()

@@ -1,0 +1,22 @@
+version: '{build}'
+
+init:
+  - git config --global core.autocrlf input
+
+environment:
+  matrix:
+    - QT5: C:\Qt\5.7\mingw53_32
+      MINGW: C:\Qt\Tools\mingw530_32
+
+matrix:
+  fast_finish: true
+
+install:
+  - git submodule update --init --recursive
+
+before_build:
+  - set PATH=%MINGW%\bin;%QT5%\bin;%PATH%
+
+build_script:
+  - qmake ./src/space-invaders.pro
+  - mingw32-make

@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 #include <QDir>
-#include "PugiXML/pugixml.cpp"
+#include "../3rdparty/pugixml/pugixml.hpp"
 #include "file_settings.hpp"
 #include "log.hpp"
 #include "patterns.hpp"
@@ -91,50 +91,50 @@ void SetDifficulty(int index)
 {
   switch (index)
   {
-    case 0:
-      gunHealth = 3;
-      alienHealthInc = 15;
-      alienSpeed = 2;
-      alienSpeedInc = 0.2;
-      alienShootPossibility = 1.3;
-      alienShootPossibilityInc = 0.04;
-      alienRayWidth = 40;
-      obstacleHealth = 10;
-      bonusSpeed = 4;
-      break;
-    case 1:
-      gunHealth = 3;
-      alienHealthInc = 12;
-      alienSpeed = 4;
-      alienSpeedInc = 0.3;
-      alienShootPossibility = 1.6;
-      alienShootPossibilityInc = 0.06;
-      alienRayWidth = 50;
-      obstacleHealth = 8;
-      bonusSpeed = 6;
-      break;
-    case 2:
-      gunHealth = 2;
-      alienHealthInc = 9;
-      alienSpeed = 6;
-      alienSpeedInc = 0.4;
-      alienShootPossibility = 2;
-      alienShootPossibilityInc = 0.08;
-      alienRayWidth = 60;
-      obstacleHealth = 6;
-      bonusSpeed = 8;
-      break;
-    case 3:
-      gunHealth = 1;
-      alienHealthInc = 5;
-      alienSpeed = 8;
-      alienSpeedInc = 0.5;
-      alienShootPossibility = 2.3;
-      alienShootPossibilityInc = 0.1;
-      alienRayWidth = 70;
-      obstacleHealth = 2;
-      bonusSpeed = 10;
-      break;
+	case 0:
+	  gunHealth = 3;
+	  alienHealthInc = 15;
+	  alienSpeed = 2;
+	  alienSpeedInc = 0.2;
+	  alienShootPossibility = 1.3;
+	  alienShootPossibilityInc = 0.04;
+	  alienRayWidth = 40;
+	  obstacleHealth = 10;
+	  bonusSpeed = 4;
+	  break;
+	case 1:
+	  gunHealth = 3;
+	  alienHealthInc = 12;
+	  alienSpeed = 4;
+	  alienSpeedInc = 0.3;
+	  alienShootPossibility = 1.6;
+	  alienShootPossibilityInc = 0.06;
+	  alienRayWidth = 50;
+	  obstacleHealth = 8;
+	  bonusSpeed = 6;
+	  break;
+	case 2:
+	  gunHealth = 2;
+	  alienHealthInc = 9;
+	  alienSpeed = 6;
+	  alienSpeedInc = 0.4;
+	  alienShootPossibility = 2;
+	  alienShootPossibilityInc = 0.08;
+	  alienRayWidth = 60;
+	  obstacleHealth = 6;
+	  bonusSpeed = 8;
+	  break;
+	case 3:
+	  gunHealth = 1;
+	  alienHealthInc = 5;
+	  alienSpeed = 8;
+	  alienSpeedInc = 0.5;
+	  alienShootPossibility = 2.3;
+	  alienShootPossibilityInc = 0.1;
+	  alienRayWidth = 70;
+	  obstacleHealth = 2;
+	  bonusSpeed = 10;
+	  break;
   }
 }
 
@@ -153,14 +153,14 @@ void Load(MainWindow * mw)
   doc.load_file((Settings::programPath + settingsFile).c_str());
   auto game = doc.child("game");
   if (game.attribute("difficulty"))
-    difficultyItem = game.attribute("difficulty").as_int();
+	difficultyItem = game.attribute("difficulty").as_int();
   if (game.attribute("resolution"))
-    resolutionItem = game.attribute("resolution").as_int();
+	resolutionItem = game.attribute("resolution").as_int();
   if (game.attribute("highscore"))
-    highScore = game.attribute("highscore").as_int();
+	highScore = game.attribute("highscore").as_int();
   auto gun = doc.child("gun");
   if (gun.attribute("skin"))
-    gunSkinItem = gun.attribute("skin").as_int();
+	gunSkinItem = gun.attribute("skin").as_int();
 
   // Set window resolution
   pMainWindow = mw;
@@ -175,7 +175,7 @@ void Save()
   // Create data dir if not exists
   QDir dir("data");
   if (!dir.exists())
-    dir.mkpath(".");
+	dir.mkpath(".");
 
   // Save settings
   pugi::xml_document tree;
