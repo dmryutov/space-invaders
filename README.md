@@ -1,7 +1,7 @@
 # Space Invaders (C++ clone)
 
 [![Build Status](https://travis-ci.org/dmryutov/space-invaders.svg?branch=master)](https://travis-ci.org/dmryutov/space-invaders)
-[![Build status](https://ci.appveyor.com/api/projects/status/9vkp33v6q8f0b0mg?svg=true)](https://ci.appveyor.com/project/dmryutov/space-invaders)
+[![Build status](https://ci.appveyor.com/api/projects/status/o356khe88xs1y1xh?svg=true)](https://ci.appveyor.com/project/dmryutov/space-invaders)
 [![Github Releases](https://img.shields.io/github/release/dmryutov/space-invaders.svg)](https://github.com/dmryutov/space-invaders/releases)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
